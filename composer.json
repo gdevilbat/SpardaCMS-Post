@@ -12,12 +12,6 @@
         "gdevilbat/sparda-cms-core-module": "^5.7.2",
         "gdevilbat/sparda-cms-taxonomy-module": "^1.0"
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://gitlab.com/maldinuribrahim/spardacms-taxonomy"
-        }
-    ],
     "extra": {
         "laravel": {
             "providers": [
