@@ -21,7 +21,10 @@ use Storage;
 
 class PostController extends CoreController
 {
+    protected $module = 'post';
     protected $post_type = 'post';
+    protected $category = 'category';
+    protected $tag = 'tag';
 
     public function __construct()
     {
@@ -42,7 +45,7 @@ class PostController extends CoreController
      */
     public function index()
     {
-        return view('post::admin.'.$this->data['theme_cms']->value.'.content.master', $this->data);
+        return view($this->module.'::admin.'.$this->data['theme_cms']->value.'.content.master', $this->data);
     }
 
     public function serviceMaster(Request $request)
@@ -55,6 +58,7 @@ class PostController extends CoreController
         $searchValue = $request->input('search')['value'];
 
         $query = $this->post_m->with('taxonomies.term')
+                                ->where('post_type', $this->post_type)
                                 ->orderBy($column, $dir)
                                 ->limit($length);
 
@@ -63,13 +67,16 @@ class PostController extends CoreController
 
         if($searchValue)
         {
-            $filtered->where(DB::raw("CONCAT(post_title,'-',post_slug,'-',created_at)"), 'like', '%'.$searchValue.'%')
-                        ->orWhereHas('taxonomies.term', function($query) use ($searchValue){
-                            $query->where(DB::raw("CONCAT(name,'-',slug)"), 'like', '%'.$searchValue.'%');
-                        })
-                        ->orWhereHas('author', function($query) use ($searchValue){
-                            $query->where(DB::raw("CONCAT(name)"), 'like', '%'.$searchValue.'%');
-                        });
+            $filtered->where(function($query) use ($searchValue){
+                        $query->where(DB::raw("CONCAT(post_title,'-',post_slug,'-',created_at)"), 'like', '%'.$searchValue.'%')
+                                ->orWhereHas('taxonomies.term', function($query) use ($searchValue){
+                                    $query->where(DB::raw("CONCAT(name,'-',slug)"), 'like', '%'.$searchValue.'%');
+                                })
+                                ->orWhereHas('author', function($query) use ($searchValue){
+                                    $query->where(DB::raw("CONCAT(name)"), 'like', '%'.$searchValue.'%');
+                                });
+
+                    });
         }
 
         $filteredTotal = $filtered->count();
@@ -87,13 +94,13 @@ class PostController extends CoreController
             $i = 0;
             foreach ($this->data['posts'] as $key_post => $post) 
             {
-                if(Auth::user()->can('read-post', $post))
+                if(Auth::user()->can('read-'.$this->post_type, $post))
                 {
                     $data[$i][0] = $post->id;
                     $data[$i][1] = $post->post_title;
                     $data[$i][2] = $post->author->name;
 
-                    $categories = $post->taxonomies->where('taxonomy', 'category');
+                    $categories = $post->taxonomies->where('taxonomy', $this->category);
                     if($categories->count() > 0)
                     {
                         $data[$i][3] = '';
@@ -141,24 +148,24 @@ class PostController extends CoreController
     {
         $this->data['method'] = method_field('POST');
         $this->data['parents'] = $this->post_m->where('post_type', $this->post_type)->get();
-        $this->data['categories'] = $this->term_taxonomy_m->with('term')->where(['taxonomy' => 'category'])->get();
-        $this->data['tags'] = $this->term_taxonomy_m->with('term')->where(['taxonomy' => 'tag'])->get();
+        $this->data['categories'] = $this->term_taxonomy_m->with('term')->where(['taxonomy' => $this->category])->get();
+        $this->data['tags'] = $this->term_taxonomy_m->with('term')->where(['taxonomy' => $this->tag])->get();
         if(isset($_GET['code']))
         {
             $this->data['post'] = $this->post_repository->with(['postMeta', 'taxonomies'])->find(decrypt($_GET['code']));
             $this->data['parents'] = $this->post_m->where('post_type', $this->post_type)->where('id', '!=', decrypt($_GET['code']))->get();
             $this->data['method'] = method_field('PUT');
-            $this->authorize('update-post', $this->data['post']);
+            $this->authorize('update-'.$this->post_type, $this->data['post']);
         }
 
-        return view('post::admin.'.$this->data['theme_cms']->value.'.content.form', $this->data);
+        return view($this->module.'::admin.'.$this->data['theme_cms']->value.'.content.form', $this->data);
     }
 
     
 
     private function getActionTable($post)
     {
-        $view = View::make('post::admin.'.$this->data['theme_cms']->value.'.content.service_master', [
+        $view = View::make($this->module.'::admin.'.$this->data['theme_cms']->value.'.content.service_master', [
             'post' => $post
         ]);
 
@@ -208,7 +215,7 @@ class PostController extends CoreController
         {
             $data = $request->except('_token', '_method', 'password_confirmation', 'role_id', 'id');
             $post = $this->post_repository->findOrFail(decrypt($request->input('id')));
-            $this->authorize('update-post', $post);
+            $this->authorize('update-'.$this->post_type, $post);
         }
 
         foreach ($data['post'] as $key => $value) 
@@ -290,12 +297,12 @@ class PostController extends CoreController
                     }
                 }
 
-
+                $self = $this;
                 $data_category = $request->has('taxonomy.category') ? $request->input('taxonomy.category') : [];
                 $remove_category_relation = $this->term_relationship_m->where('object_id', $post->id)
                                                                ->whereNotIn('term_taxonomy_id', $data_category)
-                                                               ->whereHas('taxonomy', function($query){
-                                                                    $query->where('taxonomy', 'category');
+                                                               ->whereHas('taxonomy', function($query) use ($self){
+                                                                    $query->where('taxonomy', $self->category);
                                                                })
                                                                ->pluck('id');
 
@@ -324,11 +331,12 @@ class PostController extends CoreController
                     }
                 }
 
+                $self = $this;
                 $data_tag = $request->has('taxonomy.tag') ? $request->input('taxonomy.tag') : [];
                 $remove_tag_relation = $this->term_relationship_m->where('object_id', $post->id)
                                                                ->whereNotIn('term_taxonomy_id', $data_tag)
-                                                               ->whereHas('taxonomy', function($query){
-                                                                    $query->where('taxonomy', 'tag');
+                                                               ->whereHas('taxonomy', function($query) use ($self){
+                                                                    $query->where('taxonomy', $self->tag);
                                                                })
                                                                ->pluck('id');
 
@@ -340,11 +348,11 @@ class PostController extends CoreController
 
             if($request->isMethod('POST'))
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add Post!'));
+                return redirect(action('\Gdevilbat\SpardaCMS\Modules\\'.ucfirst($this->module).'\Http\Controllers\\'.ucfirst($this->module).'Controller@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add Post!'));
             }
             else
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update Post!'));
+                return redirect(action('\Gdevilbat\SpardaCMS\Modules\\'.ucfirst($this->module).'\Http\Controllers\\'.ucfirst($this->module).'Controller@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update Post!'));
             }
         }
         else
@@ -368,7 +376,7 @@ class PostController extends CoreController
      */
     public function show($id)
     {
-        return view('post::show');
+        return view($this->module.'::show');
     }
 
     /**
@@ -379,7 +387,7 @@ class PostController extends CoreController
     public function destroy(Request $request)
     {
         $query = $this->post_m->findOrFail(decrypt($request->input('id')));
-        $this->authorize('delete-post', $query);
+        $this->authorize('delete-'.$this->post_type, $query);
 
         try {
             
