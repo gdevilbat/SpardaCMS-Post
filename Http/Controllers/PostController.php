@@ -45,7 +45,7 @@ class PostController extends CoreController
      */
     public function index()
     {
-        return view($this->module.'::admin.'.$this->data['theme_cms']->value.'.content.master', $this->data);
+        return view($this->module.'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->module).'.master', $this->data);
     }
 
     public function serviceMaster(Request $request)
@@ -158,14 +158,14 @@ class PostController extends CoreController
             $this->authorize('update-'.$this->post_type, $this->data['post']);
         }
 
-        return view($this->module.'::admin.'.$this->data['theme_cms']->value.'.content.form', $this->data);
+        return view($this->module.'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->module).'.form', $this->data);
     }
 
     
 
     private function getActionTable($post)
     {
-        $view = View::make($this->module.'::admin.'.$this->data['theme_cms']->value.'.content.service_master', [
+        $view = View::make($this->module.'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->module).'.service_master', [
             'post' => $post
         ]);
 
