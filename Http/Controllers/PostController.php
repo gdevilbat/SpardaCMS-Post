@@ -17,6 +17,7 @@ use Validator;
 use DB;
 use View;
 use Auth;
+use Storage;
 
 class PostController extends CoreController
 {
@@ -251,7 +252,14 @@ class PostController extends CoreController
 
                     $postmeta = $this->postmeta_m->where(['post_id' => $post->id, 'meta_key' => 'feature_image'])->first();
                     if(empty($postmeta))
+                    {
                         $postmeta = new $this->postmeta_m;
+                    }
+                    else
+                    {
+                        $tmp = $this->postmeta_m->where(['post_id' => $post->id, 'meta_key' => 'feature_image'])->first()->meta_value;
+                        Storage::disk('public')->delete($tmp);
+                    }
 
                     $postmeta->post_id = $post->id;
                     $postmeta->meta_key = 'feature_image';
@@ -374,6 +382,7 @@ class PostController extends CoreController
         $this->authorize('delete-post', $query);
 
         try {
+            
             if($query->delete())
             {
                 return redirect()->back()->with('global_message', array('status' => 200,'message' => 'Successfully Delete Post!'));
