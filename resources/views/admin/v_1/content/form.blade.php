@@ -34,7 +34,7 @@
 <div class="row">
     <div class="col-sm-12">
 
-        <form class="m-form m-form--fit m-form--label-align-right" action="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@store')}}" method="post">
+        <form class="m-form m-form--fit m-form--label-align-right" action="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@store')}}" method="post" enctype="multipart/form-data">
             <!--begin::Portlet-->
             <div class="row">
                 <div class="col-md-8">
@@ -109,52 +109,19 @@
                 <div class="col-md-4">
                     <div class="col-12 px-0">
                         <div class="m-portlet m-portlet--tab">
-                            <div class="m-portlet__head">
-                                <div class="m-portlet__head-caption">
-                                    <div class="m-portlet__head-title">
-                                        <span class="m-portlet__head-icon m--hide">
-                                            <i class="fa fa-gear"></i>
-                                        </span>
-                                        <h3 class="m-portlet__head-text">
-                                            Meta Data
-                                        </h3>
-                                    </div>
-                                </div>
-                            </div>
-
                             <!--begin::Form-->
-                                <div class="m-portlet__body px-0">
-                                    <div class="form-group m-form__group d-flex px-0 flex-wrap">
-                                        <div class="col-12 d-flex py-3">
-                                            <label for="exampleInputEmail1">Meta Title</label>
-                                        </div>
-                                        <div class="col-12">
-                                            <input type="text" class="form-control m-input" placeholder="Meta Title" name="meta[meta_title]" value="{{old('meta.meta_title') ? old('meta.meta_title') : (!empty($post->postMeta->where('meta_key', 'meta_title')->first()) ? $post->postMeta->where('meta_key', 'meta_title')->first()->meta_value : '')}}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group m-form__group d-flex px-0 flex-wrap">
-                                        <div class="col-12 d-flex py-3">
-                                            <label for="exampleInputEmail1">Meta Keyword</label>
-                                        </div>
-                                        <div class="col-12">
-                                            <input type="text" class="form-control m-input" placeholder="Meta Keyword" name="meta[meta_keyword]" value="{{old('meta.meta_keyword') ? old('meta.meta_keyword') : (!empty($post->postMeta->where('meta_key', 'meta_keyword')->first()) ? $post->postMeta->where('meta_key', 'meta_keyword')->first()->meta_value : '')}}" data-role="tagsinput">
-                                        </div>
-                                    </div>
-                                    <div class="form-group m-form__group d-flex px-0 flex-wrap">
-                                        <div class="col-12 d-flex py-3">
-                                            <label for="exampleInputEmail1">Meta Description</label>
-                                        </div>
-                                        <div class="col-12">
-                                            <textarea class="form-control m-input autosize" placeholder="Meta Description" name="meta[meta_description]">{{old('meta.meta_description') ? old('meta.meta_description') : (!empty($post->postMeta->where('meta_key', 'meta_description')->first()) ? $post->postMeta->where('meta_key', 'meta_description')->first()->meta_value : '')}}</textarea>
+                                <div class="m-portlet__head">
+                                    <div class="m-portlet__head-caption">
+                                        <div class="m-portlet__head-title">
+                                            <span class="m-portlet__head-icon m--hide">
+                                                <i class="fa fa-gear"></i>
+                                            </span>
+                                            <h3 class="m-portlet__head-text">
+                                                Options
+                                            </h3>
                                         </div>
                                     </div>
                                 </div>
-                            <!--end::Form-->
-                        </div>
-                    </div>
-                    <div class="col-12 px-0">
-                        <div class="m-portlet m-portlet--tab">
-                            <!--begin::Form-->
                                 <div class="m-portlet__body px-0">
                                     <div class="form-group m-form__group d-flex px-0 flex-wrap">
                                         <div class="col-7 d-flex">
@@ -180,6 +147,70 @@
                                                     <span></span>
                                                 </label>
                                             </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <!--end::Form-->
+                        </div>
+                    </div>
+                    <div class="col-12 px-0">
+                        <div class="m-portlet m-portlet--tab">
+                            <!--begin::Form-->
+                                <div class="m-portlet__body px-0">
+                                    <div class="form-group m-form__group d-flex px-0 flex-wrap">
+                                        <div class="col-12 d-flex py-3">
+                                            <label for="exampleInputEmail1">Category</label>
+                                        </div>
+                                        <div class="col-12">
+                                            <select class="form-control m-input select2" name="taxonomy[category][]" multiple>
+                                                @foreach ($categories as $category)
+                                                    <option value="{{$category->id}}" {{!empty($post->taxonomies) && in_array($category->id, $post->taxonomies->pluck('id')->toArray()) ? 'selected' : ''}}>{{$category->term->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group m-form__group d-flex px-0 flex-wrap">
+                                        <div class="col-12 d-flex py-3">
+                                            <label for="exampleInputEmail1">Tag</label>
+                                        </div>
+                                        <div class="col-12">
+                                            <select class="form-control m-input select2" name="taxonomy[tag][]" multiple>
+                                                @foreach ($tags as $tag)
+                                                    <option value="{{$tag->id}}" {{!empty($post->taxonomies) && in_array($tag->id, $post->taxonomies->pluck('id')->toArray()) ? 'selected' : ''}}>{{$tag->term->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            <!--end::Form-->
+                        </div>
+                    </div>
+                    <div class="col-12 px-0">
+                        <div class="m-portlet m-portlet--tab">
+                            <!--begin::Form-->
+                                <div class="m-portlet__body px-0">
+                                    <div class="form-group m-form__group d-flex px-0 flex-wrap">
+                                        <div class="col-12 d-flex py-3">
+                                            <label for="exampleInputEmail1">Meta Title</label>
+                                        </div>
+                                        <div class="col-12">
+                                            <input type="text" class="form-control m-input" placeholder="Meta Title" name="meta[meta_title]" value="{{old('meta.meta_title') ? old('meta.meta_title') : (!empty($post) && $post->postMeta->where('meta_key', 'meta_title')->first() ? $post->postMeta->where('meta_key', 'meta_title')->first()->meta_value : '')}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group m-form__group d-flex px-0 flex-wrap">
+                                        <div class="col-12 d-flex py-3">
+                                            <label for="exampleInputEmail1">Meta Keyword</label>
+                                        </div>
+                                        <div class="col-12">
+                                            <input type="text" class="form-control m-input" placeholder="Meta Keyword" name="meta[meta_keyword]" value="{{old('meta.meta_keyword') ? old('meta.meta_keyword') : (!empty($post) && $post->postMeta->where('meta_key', 'meta_keyword')->first() ? $post->postMeta->where('meta_key', 'meta_keyword')->first()->meta_value : '')}}" data-role="tagsinput">
+                                        </div>
+                                    </div>
+                                    <div class="form-group m-form__group d-flex px-0 flex-wrap">
+                                        <div class="col-12 d-flex py-3">
+                                            <label for="exampleInputEmail1">Meta Description</label>
+                                        </div>
+                                        <div class="col-12">
+                                            <textarea class="form-control m-input autosize" placeholder="Meta Description" name="meta[meta_description]">{{old('meta.meta_description') ? old('meta.meta_description') : (!empty($post) && $post->postMeta->where('meta_key', 'meta_description')->first() ? $post->postMeta->where('meta_key', 'meta_description')->first()->meta_value : '')}}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -226,8 +257,8 @@
                                         <div class="col-12">
                                             <div class="fileinput fileinput-new" data-provides="fileinput">
                                                 <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                                    @if(!empty($post) && $post->feature_image != null)
-                                                        <img src="{{url('public/storage/'.$post->feature_image)}}" alt=""> 
+                                                    @if(!empty($post) && $post->postMeta->where('meta_key', 'feature_image')->first()->meta_value != null)
+                                                        <img src="{{url('public/storage/'.$post->postMeta->where('meta_key', 'feature_image')->first()->meta_value)}}" alt=""> 
                                                     @else
                                                         <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt=""> 
                                                     @endif

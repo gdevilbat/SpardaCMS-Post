@@ -14,6 +14,16 @@ class Post extends Model
     	return $this->hasMany('Gdevilbat\SpardaCMS\Modules\Post\Entities\PostMeta', 'post_id');
     }
 
+    public function taxonomies()
+    {
+    	return $this->belongsToMany('\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy', 'term_relationships', 'object_id','term_taxonomy_id');
+    }
+
+    public function author()
+    {
+        return $this->belongsTo('\Gdevilbat\SpardaCMS\Modules\Core\Entities\User', 'created_by');
+    }
+
     /**
      * Set the Post Status.
      *

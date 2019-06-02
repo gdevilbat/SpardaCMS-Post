@@ -82,9 +82,9 @@
                         <tr>
                             <th>ID</th>
                             <th>Title</th>
-                            <th>Author</th>
-                            <th>Categories</th>
-                            <th>Tags</th>
+                            <th class="no-sort">Author</th>
+                            <th class="no-sort">Categories</th>
+                            <th class="no-sort">Tags</th>
                             <th class="no-sort">Comment</th>
                             <th>Created At</th>
                             <th class="no-sort">Action</th>

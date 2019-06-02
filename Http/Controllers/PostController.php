@@ -8,7 +8,9 @@ use Illuminate\Http\Response;
 use Gdevilbat\SpardaCMS\Modules\Core\Http\Controllers\CoreController;
 
 use Gdevilbat\SpardaCMS\Modules\Post\Entities\Post as Post_m;
+use Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy as TermTaxonomy_m;
 use Gdevilbat\SpardaCMS\Modules\Post\Entities\PostMeta as PostMeta_m;
+use Gdevilbat\SpardaCMS\Modules\Post\Entities\TermRelationship as TermRelationship_m;
 use Gdevilbat\SpardaCMS\Modules\Core\Repositories\Repository;
 
 use Validator;
@@ -25,8 +27,12 @@ class PostController extends CoreController
         parent::__construct();
         $this->post_m = new Post_m;
         $this->post_repository = new Repository(new Post_m);
+        $this->term_taxonomy_m = new TermTaxonomy_m;
+        $this->term_taxonomy_repository = new Repository(new TermTaxonomy_m);
         $this->postmeta_m = new PostMeta_m;
         $this->postmeta_repository = new Repository(new PostMeta_m);
+        $this->term_relationship_m = new TermRelationship_m;
+        $this->term_relationship_repository = new Repository(new TermRelationship_m);
     }
 
     /**
@@ -40,14 +46,14 @@ class PostController extends CoreController
 
     public function serviceMaster(Request $request)
     {
-        $column = ['id', 'post_name', 'author', 'categoris', 'tags','comment', 'created_at'];
+        $column = ['id', 'post_title', 'author', 'categories', 'tags','comment', 'created_at'];
 
         $length = !empty($request->input('length')) ? $request->input('length') : 10 ;
         $column = !empty($request->input('order.0.column')) ? $column[$request->input('order.0.column')] : 'id' ;
         $dir = !empty($request->input('order.0.dir')) ? $request->input('order.0.dir') : 'DESC' ;
         $searchValue = $request->input('search')['value'];
 
-        $query = $this->post_m
+        $query = $this->post_m->with('taxonomies.term')
                                 ->orderBy($column, $dir)
                                 ->limit($length);
 
@@ -56,7 +62,13 @@ class PostController extends CoreController
 
         if($searchValue)
         {
-            $filtered->where(DB::raw("CONCAT(post_title,'-',post_title)"), 'like', '%'.$searchValue.'%');
+            $filtered->where(DB::raw("CONCAT(post_title,'-',post_slug,'-',created_at)"), 'like', '%'.$searchValue.'%')
+                        ->orWhereHas('taxonomies.term', function($query) use ($searchValue){
+                            $query->where(DB::raw("CONCAT(name,'-',slug)"), 'like', '%'.$searchValue.'%');
+                        })
+                        ->orWhereHas('author', function($query) use ($searchValue){
+                            $query->where(DB::raw("CONCAT(name)"), 'like', '%'.$searchValue.'%');
+                        });
         }
 
         $filteredTotal = $filtered->count();
@@ -78,9 +90,36 @@ class PostController extends CoreController
                 {
                     $data[$i][0] = $post->id;
                     $data[$i][1] = $post->post_title;
-                    $data[$i][2] = '';
-                    $data[$i][3] = '';
-                    $data[$i][4] = '';
+                    $data[$i][2] = $post->author->name;
+
+                    $categories = $post->taxonomies->where('taxonomy', 'category');
+                    if($categories->count() > 0)
+                    {
+                        $data[$i][3] = '';
+                        foreach ($categories as $key => $category) 
+                        {
+                            $data[$i][3] .= '<span class="badge badge-danger mx-1">'.$category->term->name.'</span>';
+                        }
+                    }
+                    else
+                    {
+                        $data[$i][3] = '-';
+                    }
+
+                    $tags = $post->taxonomies->where('taxonomy', 'tag');
+                    if($tags->count() > 0)
+                    {
+                        $data[$i][4] = '';
+                        foreach ($tags as $key => $tag) 
+                        {
+                            $data[$i][4] .= '<span class="badge badge-danger mx-1">'.$tag->term->name.'</span>';
+                        }
+                    }
+                    else
+                    {
+                        $data[$i][4] = '-';
+                    }
+
                     $data[$i][5] = '';
                     $data[$i][6] = $post->created_at->toDateTimeString();
                     $data[$i][7] = $this->getActionTable($post);
@@ -101,9 +140,11 @@ class PostController extends CoreController
     {
         $this->data['method'] = method_field('POST');
         $this->data['parents'] = $this->post_m->where('post_type', $this->post_type)->get();
+        $this->data['categories'] = $this->term_taxonomy_m->with('term')->where(['taxonomy' => 'category'])->get();
+        $this->data['tags'] = $this->term_taxonomy_m->with('term')->where(['taxonomy' => 'tag'])->get();
         if(isset($_GET['code']))
         {
-            $this->data['post'] = $this->post_repository->with('postMeta')->find(decrypt($_GET['code']));
+            $this->data['post'] = $this->post_repository->with(['postMeta', 'taxonomies'])->find(decrypt($_GET['code']));
             $this->data['parents'] = $this->post_m->where('post_type', $this->post_type)->where('id', '!=', decrypt($_GET['code']))->get();
             $this->data['method'] = method_field('PUT');
             $this->authorize('update-post', $this->data['post']);
@@ -135,6 +176,7 @@ class PostController extends CoreController
         $validator = Validator::make($request->all(), [
             'post.post_title' => 'required',
             'post.post_slug' => 'required|max:191',
+            'meta.feature_image' => 'max:500'
         ]);
 
         if($request->isMethod('POST'))
@@ -185,17 +227,108 @@ class PostController extends CoreController
 
         if($post->save())
         {
-            foreach ($data['meta'] as $key => $value) 
-            {
-                $postmeta = $this->postmeta_m->where(['post_id' => $post->id, 'meta_key' => $key])->first();
-                if(empty($postmeta))
-                    $postmeta = new $this->postmeta_m;
+            /*==================================
+            =            Meta Data Model       =
+            ==================================*/
 
-                $postmeta->post_id = $post->id;
-                $postmeta->meta_key = $key;
-                $postmeta->meta_value = $value;
-                $postmeta->save();
-            }
+                $meta = $request->except('post', 'taxonomy','meta.feature_image', '_token', '_method', 'password_confirmation', 'role_id', 'id')['meta'];
+
+                foreach ($meta as $key => $value) 
+                {
+                    $postmeta = $this->postmeta_m->where(['post_id' => $post->id, 'meta_key' => $key])->first();
+                    if(empty($postmeta))
+                        $postmeta = new $this->postmeta_m;
+
+                    $postmeta->post_id = $post->id;
+                    $postmeta->meta_key = $key;
+                    $postmeta->meta_value = $value;
+                    $postmeta->save();
+                }
+
+                if($request->hasFile('meta.feature_image'))
+                {
+                    $path = $request->file('meta.feature_image')->store('post/'.$post->post_slug,'public');
+
+                    $postmeta = $this->postmeta_m->where(['post_id' => $post->id, 'meta_key' => 'feature_image'])->first();
+                    if(empty($postmeta))
+                        $postmeta = new $this->postmeta_m;
+
+                    $postmeta->post_id = $post->id;
+                    $postmeta->meta_key = 'feature_image';
+                    $postmeta->meta_value = $path;
+                    $postmeta->save();
+                }
+            
+            /*=====  End of Meta Data   ======*/
+
+            /*=============================================
+            =            Category Relationship            =
+            =============================================*/
+
+                if($request->has('taxonomy.category'))
+                {
+                    foreach ($request->input('taxonomy.category') as $key => $value) 
+                    {
+                        $category_data = $this->term_relationship_repository->getByAttributes(['object_id' => $post->id, 'term_taxonomy_id' => $value]);
+
+                        if($category_data->count() == 0)
+                        {
+                            $category = new $this->term_relationship_m;
+                            $category->term_taxonomy_id = $value;
+                            $category->object_id = $post->id;
+                            $category->save();
+                        }
+
+                    }
+                }
+
+
+                $data_category = $request->has('taxonomy.category') ? $request->input('taxonomy.category') : [];
+                $remove_category_relation = $this->term_relationship_m->where('object_id', $post->id)
+                                                               ->whereNotIn('term_taxonomy_id', $data_category)
+                                                               ->whereHas('taxonomy', function($query){
+                                                                    $query->where('taxonomy', 'category');
+                                                               })
+                                                               ->pluck('id');
+
+               $this->term_relationship_m->whereIn('id', $remove_category_relation)->delete();
+            
+            /*=====  End of Category Relationship  ======*/
+
+            /*=============================================
+            =            Tag Relationship            =
+            =============================================*/
+
+                if($request->has('taxonomy.tag'))
+                {
+                    foreach ($request->input('taxonomy.tag') as $key => $value) 
+                    {
+                        $tag_data = $this->term_relationship_repository->getByAttributes(['object_id' => $post->id, 'term_taxonomy_id' => $value]);
+
+                        if($tag_data->count() == 0)
+                        {
+                            $tag = new $this->term_relationship_m;
+                            $tag->term_taxonomy_id = $value;
+                            $tag->object_id = $post->id;
+                            $tag->save();
+                        }
+
+                    }
+                }
+
+                $data_tag = $request->has('taxonomy.tag') ? $request->input('taxonomy.tag') : [];
+                $remove_tag_relation = $this->term_relationship_m->where('object_id', $post->id)
+                                                               ->whereNotIn('term_taxonomy_id', $data_tag)
+                                                               ->whereHas('taxonomy', function($query){
+                                                                    $query->where('taxonomy', 'tag');
+                                                               })
+                                                               ->pluck('id');
+
+               $this->term_relationship_m->whereIn('id', $remove_tag_relation)->delete();
+            
+            /*=====  End of Tag Relationship  ======*/
+            
+            
 
             if($request->isMethod('POST'))
             {
@@ -231,33 +364,23 @@ class PostController extends CoreController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        return view('post::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      * @param int $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $query = $this->post_m->findOrFail(decrypt($request->input('id')));
+        $this->authorize('delete-post', $query);
+
+        try {
+            if($query->delete())
+            {
+                return redirect()->back()->with('global_message', array('status' => 200,'message' => 'Successfully Delete Post!'));
+            }
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->with('global_message', array('status' => 200,'message' => 'Failed Delete Post, It\'s Has Been Used!'));
+        }
     }
 }
