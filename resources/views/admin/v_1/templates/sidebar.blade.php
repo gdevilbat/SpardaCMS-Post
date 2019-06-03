@@ -11,5 +11,8 @@
         <ul class="m-menu__subnav">
             <li class="m-menu__item  {{Route::current()->getName() ==  'category' ? 'm-menu__item--active' : ''}}" aria-haspopup="true"><a href="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@index')}}" class="m-menu__link "><i class="m-menu__link-bullet m-menu__link-bullet--dot"><span></span></i><span class="m-menu__link-text">Categories</span></a></li>
         </ul>
+        <ul class="m-menu__subnav">
+            <li class="m-menu__item  {{Route::current()->getName() ==  'tag' ? 'm-menu__item--active' : ''}}" aria-haspopup="true"><a href="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\TagController@index')}}" class="m-menu__link "><i class="m-menu__link-bullet m-menu__link-bullet--dot"><span></span></i><span class="m-menu__link-text">Tags</span></a></li>
+        </ul>
     </div>
 </li>

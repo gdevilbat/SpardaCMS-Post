@@ -35,7 +35,7 @@ Route::group(['prefix' => 'control', 'middleware' => 'core.menu'], function() {
 
 		Route::group(['prefix' => 'category'], function() {
 	        /*=============================================
-	        =            Post CMS            =
+	        =            Category CMS            =
 	        =============================================*/
 	        
 			    Route::get('master', 'CategoryController@index')->middleware('can:menu-post')->name('category');
@@ -48,9 +48,26 @@ Route::group(['prefix' => 'control', 'middleware' => 'core.menu'], function() {
 				    Route::get('master', 'CategoryController@serviceMaster')->middleware('can:menu-post');
 			    });
 	        
-	        /*=====  End of Post CMS  ======*/
+	        /*=====  End of Category CMS  ======*/
 		});
 
+		Route::group(['prefix' => 'tag'], function() {
+	        /*=============================================
+	        =            Tag CMS            =
+	        =============================================*/
+	        
+			    Route::get('master', 'TagController@index')->middleware('can:menu-post')->name('tag');
+			    Route::get('form', 'TagController@create')->name('tag');
+			    Route::post('form', 'TagController@store')->middleware('can:create-post')->name('tag');
+			    Route::put('form', 'TagController@store')->name('tag');
+			    Route::delete('form', 'TagController@destroy')->name('tag');
+
+			    Route::group(['prefix' => 'api'], function() {
+				    Route::get('master', 'TagController@serviceMaster')->middleware('can:menu-post');
+			    });
+	        
+	        /*=====  End of Tag CMS  ======*/
+		});
         
 	});
 });

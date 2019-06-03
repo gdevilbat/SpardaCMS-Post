@@ -10,15 +10,15 @@ use Gdevilbat\SpardaCMS\Modules\Taxonomy\Http\Controllers\TaxonomyController;
 use Validator;
 use Auth;
 
-class CategoryController extends TaxonomyController
+class TagController extends TaxonomyController
 {
     protected $module = 'post';
-    protected $mod_dir = 'Category';
-    protected $taxonomy = 'category';
+    protected $mod_dir = 'Tag';
+    protected $taxonomy = 'tag';
 
     public function store(Request $request)
     {
-    	 $validator = Validator::make($request->all(), [
+         $validator = Validator::make($request->all(), [
             'term.name' => 'required|max:191',
             'term.slug' => 'required|max:191',
         ]);
@@ -45,10 +45,10 @@ class CategoryController extends TaxonomyController
         $term = $this->terms_repository->findBySlug($request->input('term.slug'));
         if(empty($term))
         {
-        	$term = new $this->terms_m;
-        	$term->name = $request->input('term.name');
-        	$term->slug = $request->input('term.slug');
-        	$term->created_by = Auth::id();
+            $term = new $this->terms_m;
+            $term->name = $request->input('term.name');
+            $term->slug = $request->input('term.slug');
+            $term->created_by = Auth::id();
             $term->modified_by = Auth::id();
             $term->save();
         }
