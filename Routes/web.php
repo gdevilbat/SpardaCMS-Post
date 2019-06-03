@@ -33,6 +33,24 @@ Route::group(['prefix' => 'control', 'middleware' => 'core.menu'], function() {
 	        /*=====  End of Post CMS  ======*/
 		});
 
+		Route::group(['prefix' => 'category'], function() {
+	        /*=============================================
+	        =            Post CMS            =
+	        =============================================*/
+	        
+			    Route::get('master', 'CategoryController@index')->middleware('can:menu-post')->name('category');
+			    Route::get('form', 'CategoryController@create')->name('category');
+			    Route::post('form', 'CategoryController@store')->middleware('can:create-post')->name('category');
+			    Route::put('form', 'CategoryController@store')->name('category');
+			    Route::delete('form', 'CategoryController@destroy')->name('category');
+
+			    Route::group(['prefix' => 'api'], function() {
+				    Route::get('master', 'CategoryController@serviceMaster')->middleware('can:menu-post');
+			    });
+	        
+	        /*=====  End of Post CMS  ======*/
+		});
+
         
 	});
 });

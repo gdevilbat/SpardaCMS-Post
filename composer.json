@@ -10,7 +10,7 @@
     ],
     "require": {
         "gdevilbat/sparda-cms-core-module": "^5.7.2",
-        "gdevilbat/sparda-cms-taxonomy-module": "^1.0"
+        "gdevilbat/sparda-cms-taxonomy-module": "^1.1"
     },
     "extra": {
         "laravel": {
