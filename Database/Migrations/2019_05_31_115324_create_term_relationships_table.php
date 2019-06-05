@@ -22,7 +22,7 @@ class CreateTermRelationshipsTable extends Migration
         });
 
         Schema::table('term_relationships', function($table){
-            $table->foreign('term_taxonomy_id')->references('id')->on('term_taxonomy')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('term_taxonomy_id')->references('id')->on('term_taxonomy')->onDelete('restrict')->onUpdate('restrict');
             $table->foreign('object_id')->references('id')->on('posts')->onDelete('cascade')->onUpdate('cascade');
         });
     }
