@@ -56,6 +56,7 @@ class TagController extends TaxonomyController
         $taxonomy->term_id = $term->id;
         $taxonomy->description = $request->input('taxonomy.description');
         $taxonomy->taxonomy = $request->input('taxonomy.taxonomy');
+        $taxonomy->parent_id = $request->input('taxonomy.parent_id');
 
         if($request->isMethod('POST'))
         {
@@ -71,22 +72,22 @@ class TagController extends TaxonomyController
         {
             if($request->isMethod('POST'))
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add Category!'));
+                return redirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\TagController@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add Tag!'));
             }
             else
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update Category!'));
+                return redirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\TagController@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update Tag!'));
             }
         }
         else
         {
             if($request->isMethod('POST'))
             {
-                return redirect()->back()->with('global_message', array('status' => 400, 'message' => 'Failed To Add Category!'));
+                return redirect()->back()->with('global_message', array('status' => 400, 'message' => 'Failed To Add Tag!'));
             }
             else
             {
-                return redirect()->back()->with('global_message', array('status' => 400, 'message' => 'Failed To Update Category!'));
+                return redirect()->back()->with('global_message', array('status' => 400, 'message' => 'Failed To Update Tag!'));
             }
         }
     }
