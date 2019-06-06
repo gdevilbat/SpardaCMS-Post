@@ -37,20 +37,27 @@ class CategoryController extends TaxonomyController
         else
         {
             $data = $request->except('_token', '_method', 'id');
-            $taxonomy = $this->taxonomy_repository->findOrFail(decrypt($request->input('id')));
+            $taxonomy = $this->taxonomy_repository->with('term')->findOrFail(decrypt($request->input('id')));
             $this->authorize('update-taxonomy', $taxonomy);
         }
 
+        if($request->isMethod('POST'))
+        {
+            $term = $this->terms_repository->findBySlug($request->input('term.slug'));
+        }
+        else
+        {
+            $term = $this->terms_repository->find($taxonomy->term->id);
+        }
 
-        $term = $this->terms_repository->findBySlug($request->input('term.slug'));
         if(empty($term))
         {
         	$term = new $this->terms_m;
-        	$term->slug = $request->input('term.slug');
         	$term->created_by = Auth::id();
         }
         
     	$term->name = $request->input('term.name');
+    	$term->slug = $request->input('term.slug');
         $term->modified_by = Auth::id();
         $term->save();
 
