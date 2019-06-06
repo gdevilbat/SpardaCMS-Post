@@ -46,12 +46,13 @@ class TagController extends TaxonomyController
         if(empty($term))
         {
             $term = new $this->terms_m;
-            $term->name = $request->input('term.name');
             $term->slug = $request->input('term.slug');
             $term->created_by = Auth::id();
-            $term->modified_by = Auth::id();
-            $term->save();
         }
+        
+        $term->name = $request->input('term.name');
+        $term->modified_by = Auth::id();
+        $term->save();
 
         $taxonomy->term_id = $term->id;
         $taxonomy->description = $request->input('taxonomy.description');
