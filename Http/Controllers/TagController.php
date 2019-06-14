@@ -64,7 +64,6 @@ class TagController extends TaxonomyController
         $taxonomy->term_id = $term->id;
         $taxonomy->description = $request->input('taxonomy.description');
         $taxonomy->taxonomy = $request->input('taxonomy.taxonomy');
-        $taxonomy->parent_id = $request->input('taxonomy.parent_id');
 
         if($request->isMethod('POST'))
         {

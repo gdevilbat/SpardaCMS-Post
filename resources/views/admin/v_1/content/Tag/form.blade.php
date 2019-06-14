@@ -87,19 +87,6 @@
                             <textarea type="text" class="form-control m-input autosize" name="taxonomy[description]" placeholder="Taxonomy Description">{{old('taxonomy.description') ? old('taxonomy.description') : (!empty($taxonomy) ? $taxonomy->description : '')}}</textarea>
                         </div>
                     </div>
-                    <div class="form-group m-form__group d-flex">
-                        <div class="col-md-4 d-flex justify-content-end py-3">
-                            <label for="exampleInputEmail1">Tag Parent</label>
-                        </div>
-                        <div class="col-md-8">
-                            <select name="taxonomy[parent_id]" class="form-control m-input m-input--solid">
-                                <option value="" selected>-- Non Parent --</option>
-                                @foreach ($parents as $parent)
-                                    <option value="{{$parent->id}}" {{old('taxonomy.parent_id') && old('taxonomy.parent_id') == $parent->id ? 'selected' : (!empty($taxonomy->parent) && $taxonomy->parent->id == $parent->id ? 'selected' : '')}}>-- {{ucfirst($parent->name)}} --</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
                     <input type="hidden" name="taxonomy[taxonomy]" value="tag">
                 </div>
                 {{csrf_field()}}
