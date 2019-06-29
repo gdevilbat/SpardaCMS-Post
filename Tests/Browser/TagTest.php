@@ -16,7 +16,7 @@ class TagTest extends DuskTestCase
      *
      * @return void
      */
-    public function testCreateCategory()
+    public function testCreateTag()
     {
         $user = \App\User::find(1);
         $faker = \Faker\Factory::create();
@@ -42,7 +42,7 @@ class TagTest extends DuskTestCase
      *
      * @return void
      */
-    public function testEditCategory()
+    public function testEditTag()
     {
         $user = \App\User::find(1);
 
@@ -66,7 +66,7 @@ class TagTest extends DuskTestCase
      *
      * @return void
      */
-    public function testDeleteCategory()
+    public function testDeleteTag()
     {
         $user = \App\User::find(1);
 

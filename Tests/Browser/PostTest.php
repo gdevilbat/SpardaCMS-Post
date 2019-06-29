@@ -16,7 +16,7 @@ class PostTest extends DuskTestCase
      *
      * @return void
      */
-    public function testCreateCategory()
+    public function testCreatePost()
     {
         $user = \App\User::find(1);
         $faker = \Faker\Factory::create();
