@@ -73,4 +73,14 @@ class Post extends Model
             $this->attributes['post_excerpt'] = substr(strip_tags($this->post_content), 0, 50).'[...]';
     	}
     }
+
+    public static function getTableName()
+    {
+        return with(new Static)->getTable();
+    }
+
+    public static function getPrimaryKey()
+    {
+        return with(new Static)->getKeyName();
+    }
 }

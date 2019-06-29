@@ -239,7 +239,15 @@ class PostController extends CoreController
             =            Meta Data Model       =
             ==================================*/
 
-                $meta = $request->except('post', 'taxonomy','meta.feature_image', '_token', '_method', 'password_confirmation', 'role_id', 'id')['meta'];
+                $meta = [];
+
+                $request_meta = $request->except('post', 'taxonomy','meta.feature_image', '_token', '_method', 'password_confirmation', 'role_id', 'id');
+
+                if(array_key_exists('meta', $request_meta))
+                {
+                    $meta = $request_meta['meta'];
+                }
+
 
                 foreach ($meta as $key => $value) 
                 {

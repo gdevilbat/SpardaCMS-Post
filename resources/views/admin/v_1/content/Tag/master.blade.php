@@ -75,7 +75,7 @@
                             <a href="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\TagController@create')}}" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air">
                                 <span>
                                     <i class="la la-plus"></i>
-                                    <span>Add New Category</span>
+                                    <span>Add New Tag</span>
                                 </span>
                             </a>
                         </div>

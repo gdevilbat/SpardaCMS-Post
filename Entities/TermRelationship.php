@@ -13,4 +13,14 @@ class TermRelationship extends Model
     {
     	return $this->belongsTo('\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy', 'term_taxonomy_id');
     }
+
+    public static function getTableName()
+    {
+        return with(new Static)->getTable();
+    }
+
+    public static function getPrimaryKey()
+    {
+        return with(new Static)->getKeyName();
+    }
 }

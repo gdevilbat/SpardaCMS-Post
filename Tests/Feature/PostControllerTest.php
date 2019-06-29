@@ -1,0 +1,81 @@
+<?php
+
+namespace Gdevilbat\SpardaCMS\Modules\Post\Tests\Feature;
+
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class PostControllerTest extends TestCase
+{
+    use RefreshDatabase, \Gdevilbat\SpardaCMS\Modules\Core\Tests\ManualRegisterProvider;
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testReadPost()
+    {
+        $response = $this->get(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@index'));
+
+        $response->assertStatus(302)
+                 ->assertRedirect(action('\Gdevilbat\SpardaCMS\Modules\Core\Http\Controllers\Auth\LoginController@showLoginForm')); // Return Not Valid, User Not Login
+
+        $user = \App\User::find(1);
+
+        $response = $this->actingAs($user)
+                         ->from(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@index'))
+                         ->json('GET',action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@serviceMaster'))
+                         ->assertSuccessful()
+                         ->assertJsonStructure(['data', 'draw', 'recordsTotal', 'recordsFiltered']); // Return Valid user Login
+    }
+
+    public function testCreateDataPost()
+    {
+        $response = $this->post(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@store'));
+
+        $response->assertStatus(302)
+                 ->assertRedirect(action('\Gdevilbat\SpardaCMS\Modules\Core\Http\Controllers\Auth\LoginController@showLoginForm')); //Return Not Valid, User Not Login
+
+        $user = \App\User::find(1);
+
+        $response = $this->actingAs($user)
+                         ->from(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@create'))
+                         ->post(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@store'))
+                         ->assertStatus(302)
+                         ->assertRedirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@create'))
+                         ->assertSessionHasErrors(); //Return Not Valid, Data Not Complete
+
+        $faker = \Faker\Factory::create();
+        $name = $faker->word;
+        $slug = $faker->word;
+
+        $category = \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::where(['taxonomy' => 'category'])->first();
+        $tag = \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::where(['taxonomy' => 'tag'])->first();
+
+        $response = $this->actingAs($user)
+                         ->from(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@create'))
+                         ->post(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@store'), [
+                                'post' => ['post_title' => $name, 'post_slug' => $slug, 'post_content' => $faker->text],
+                                'taxonomy' => ['category' => [$category->getKey()], 'tag' => [$tag->getKey()]]
+                            ])
+                         ->assertStatus(302)
+                         ->assertRedirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@index'))
+                         ->assertSessionHas('global_message.status', 200)
+                         ->assertSessionHasNoErrors(); //Return Valid, Data Complete
+
+        $this->assertDatabaseHas(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getTableName(), ['post_slug' => $slug]);
+
+        $post = \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::where(['post_slug' => $slug])->first();
+
+        $this->assertDatabaseHas(\Gdevilbat\SpardaCMS\Modules\Post\Entities\TermRelationship::getTableName(), [
+            'object_id' => $post->getKey(), 
+            'term_taxonomy_id' => $category->getKey()
+        ]);
+
+        $this->assertDatabaseHas(\Gdevilbat\SpardaCMS\Modules\Post\Entities\TermRelationship::getTableName(), [
+            'object_id' => $post->getKey(), 
+            'term_taxonomy_id' => $tag->getKey()
+        ]);
+    }
+}
