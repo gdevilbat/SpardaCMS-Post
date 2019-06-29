@@ -85,7 +85,7 @@ class CategoryControllerTest extends TestCase
         $taxonomy = \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::with('term')->first();
 
         $response = $this->actingAs($user)
-                        ->from(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@create').'?code='.encrypt($user->getKey()))
+                        ->from(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@create').'?code='.encrypt($taxonomy->getKey()))
                         ->post(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@store'), [
                             'term' => ['name' => $taxonomy->term->name, 'slug' => $taxonomy->term->slug],
                             'taxonomy' => ['description' => $faker->text, 'taxonomy' => 'category'],
