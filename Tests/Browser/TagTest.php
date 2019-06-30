@@ -45,8 +45,9 @@ class TagTest extends DuskTestCase
     public function testEditTag()
     {
         $user = \App\User::find(1);
+        $faker = \Faker\Factory::create();
 
-        $this->browse(function (Browser $browser) use ($user) {
+        $this->browse(function (Browser $browser) use ($user, $faker) {
 
             $browser->loginAs($user)
                     ->visit(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\TagController@index'))
@@ -55,7 +56,11 @@ class TagTest extends DuskTestCase
                     ->clickLink('Actions')
                     ->clickLink('Edit')
                     ->AssertSee('Tag Form')
-                    ->press('Submit')
+                    ->type('term[name]', $faker->word)
+                    ->type('term[slug]', $faker->word)
+                    ->type('taxonomy[description]', $faker->text);
+
+            $browser->press('Submit')
                     ->waitForText('Master Data of Tags')
                     ->assertSee('Successfully Update Tag!');
         });

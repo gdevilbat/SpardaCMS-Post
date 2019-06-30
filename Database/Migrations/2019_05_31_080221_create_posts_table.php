@@ -14,7 +14,7 @@ class CreatePostsTable extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id_posts');
             $table->text('post_title');
             $table->string('post_slug')->unique();
             $table->longText('post_content')->nullable();
@@ -40,7 +40,7 @@ class CreatePostsTable extends Migration
         Schema::table('posts', function($table){
             $table->foreign('created_by')->references('id')->on('users')->onDelete('restrict')->onUpdate('restrict');
             $table->foreign('modified_by')->references('id')->on('users')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreign('post_parent')->references('id')->on('posts')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('post_parent')->references(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())->on('posts')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

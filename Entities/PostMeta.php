@@ -8,6 +8,7 @@ class PostMeta extends Model
 {
     protected $fillable = [];
     protected $table = 'postmeta';
+    protected $primaryKey = 'id_postmeta';
     protected $casts = [
         'meta_value' => 'array',
     ];

@@ -36,8 +36,8 @@ class TagController extends TaxonomyController
         }
         else
         {
-            $data = $request->except('_token', '_method', 'id');
-            $taxonomy = $this->taxonomy_repository->with('term')->findOrFail(decrypt($request->input('id')));
+            $data = $request->except('_token', '_method', \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey());
+            $taxonomy = $this->taxonomy_repository->with('term')->findOrFail(decrypt($request->input(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())));
             $this->authorize('update-taxonomy', $taxonomy);
         }
 
@@ -47,7 +47,7 @@ class TagController extends TaxonomyController
         }
         else
         {
-            $term = $this->terms_repository->find($taxonomy->term->id);
+            $term = $this->terms_repository->find($taxonomy->term->getKey());
         }
 
         if(empty($term))
@@ -61,7 +61,7 @@ class TagController extends TaxonomyController
         $term->modified_by = Auth::id();
         $term->save();
 
-        $taxonomy->term_id = $term->id;
+        $taxonomy->term_id = $term->getKey();
         $taxonomy->description = $request->input('taxonomy.description');
         $taxonomy->taxonomy = $request->input('taxonomy.taxonomy');
 

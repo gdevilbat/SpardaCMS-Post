@@ -99,7 +99,7 @@
                             </div>
                             {{csrf_field()}}
                             @if(isset($_GET['code']))
-                                <input type="hidden" name="id" value="{{$_GET['code']}}">
+                                <input type="hidden" name="{{\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey()}}" value="{{$_GET['code']}}">
                             @endif
                             {{$method}}
 
@@ -164,7 +164,7 @@
                                         <div class="col-12">
                                             <select class="form-control m-input select2" name="taxonomy[category][]" multiple>
                                                 @foreach ($categories as $category)
-                                                    <option value="{{$category->id}}" {{!empty($post->taxonomies) && in_array($category->id, $post->taxonomies->pluck('id')->toArray()) ? 'selected' : ''}}>{{$category->term->name}}</option>
+                                                    <option value="{{$category->getKey()}}" {{!empty($post->taxonomies) && in_array($category->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()) ? 'selected' : ''}}>{{$category->term->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -176,7 +176,7 @@
                                         <div class="col-12">
                                             <select class="form-control m-input select2" name="taxonomy[tag][]" multiple>
                                                 @foreach ($tags as $tag)
-                                                    <option value="{{$tag->id}}" {{!empty($post->taxonomies) && in_array($tag->id, $post->taxonomies->pluck('id')->toArray()) ? 'selected' : ''}}>{{$tag->term->name}}</option>
+                                                    <option value="{{$tag->getKey()}}" {{!empty($post->taxonomies) && in_array($tag->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()) ? 'selected' : ''}}>{{$tag->term->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -229,7 +229,7 @@
                                             <select name="post[post_parent]" class="form-control m-input m-input--solid">
                                                 <option value="" selected>-- Non Group --</option>
                                                 @foreach ($parents as $parent)
-                                                    <option value="{{$parent->id}}" {{old('post.post_parent') && old('post.post_parent') == $parent->id ? 'selected' : (!empty($post) && $post->post_parent == $parent->id ? 'selected' : '')}}>-- {{ucfirst($parent->post_title)}} --</option>
+                                                    <option value="{{$parent->getKey()}}" {{old('post.post_parent') && old('post.post_parent') == $parent->getKey() ? 'selected' : (!empty($post) && $post->post_parent == $parent->getKey() ? 'selected' : '')}}>-- {{ucfirst($parent->post_title)}} --</option>
                                                 @endforeach
                                             </select>
                                         </div>

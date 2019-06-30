@@ -50,11 +50,13 @@ class CategoryControllerTest extends TestCase
         $name = $faker->word;
         $slug = $faker->word;
 
+        $taxonomy = \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::with('term')->first();
+
         $response = $this->actingAs($user)
                          ->from(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@create'))
                          ->post(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@store'), [
                                 'term' => ['name' => $name, 'slug' => $slug],
-                                'taxonomy' => ['description' => $faker->text, 'taxonomy' => 'category'],
+                                'taxonomy' => ['description' => $faker->text, 'taxonomy' => 'category', 'parent_id' => $taxonomy->getKey()],
                             ])
                          ->assertStatus(302)
                          ->assertRedirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@index'))
@@ -88,7 +90,7 @@ class CategoryControllerTest extends TestCase
                         ->from(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@create').'?code='.encrypt($taxonomy->getKey()))
                         ->post(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@store'), [
                             'term' => ['name' => $taxonomy->term->name, 'slug' => $taxonomy->term->slug],
-                            'taxonomy' => ['description' => $faker->text, 'taxonomy' => 'category'],
+                            'taxonomy' => ['description' => $faker->text, 'taxonomy' => 'category', 'parent_id' => $taxonomy->getKey()],
                             $taxonomy->getKeyName() => encrypt($taxonomy->getKey()),
                             '_method' => 'PUT'
                         ])

@@ -48,7 +48,9 @@ class CategoryTest extends DuskTestCase
     {
         $user = \App\User::find(1);
 
-        $this->browse(function (Browser $browser) use ($user) {
+        $faker = \Faker\Factory::create();
+
+        $this->browse(function (Browser $browser) use ($user, $faker) {
 
             $browser->loginAs($user)
                     ->visit(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@index'))
@@ -57,7 +59,12 @@ class CategoryTest extends DuskTestCase
                     ->clickLink('Actions')
                     ->clickLink('Edit')
                     ->AssertSee('Category Form')
-                    ->press('Submit')
+                    ->type('term[name]', $faker->word)
+                    ->type('term[slug]', $faker->word)
+                    ->type('taxonomy[description]', $faker->text)
+                    ->script('document.getElementsByName("taxonomy[parent_id]")[0].selectedIndex = 1');
+
+            $browser ->press('Submit')
                     ->waitForText('Master Data of Categories')
                     ->assertSee('Successfully Update Category!');
         });

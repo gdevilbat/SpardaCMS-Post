@@ -14,7 +14,7 @@ class CreateTermRelationshipsTable extends Migration
     public function up()
     {
         Schema::create('term_relationships', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id_term_relationships');
             $table->unsignedInteger('term_taxonomy_id');
             $table->unsignedBigInteger('object_id');
             $table->integer('term_order')->default(0);
@@ -22,8 +22,8 @@ class CreateTermRelationshipsTable extends Migration
         });
 
         Schema::table('term_relationships', function($table){
-            $table->foreign('term_taxonomy_id')->references('id')->on('term_taxonomy')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreign('object_id')->references('id')->on('posts')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('term_taxonomy_id')->references(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->on('term_taxonomy')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreign('object_id')->references(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())->on('posts')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

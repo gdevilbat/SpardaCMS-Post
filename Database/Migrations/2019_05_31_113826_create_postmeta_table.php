@@ -14,7 +14,7 @@ class CreatePostmetaTable extends Migration
     public function up()
     {
         Schema::create('postmeta', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id_postmeta');
             $table->unsignedBigInteger('post_id');
             $table->string('meta_key');
             $table->longText('meta_value')->nullable();
@@ -22,7 +22,7 @@ class CreatePostmetaTable extends Migration
         });
 
         Schema::table('postmeta', function($table){
-            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('post_id')->references(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())->on('posts')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

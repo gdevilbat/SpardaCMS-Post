@@ -53,10 +53,12 @@ class PostControllerTest extends TestCase
         $category = \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::where(['taxonomy' => 'category'])->first();
         $tag = \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::where(['taxonomy' => 'tag'])->first();
 
+        $post = \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::where('post_type', 'post')->first();
+
         $response = $this->actingAs($user)
                          ->from(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@create'))
                          ->post(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@store'), [
-                                'post' => ['post_title' => $name, 'post_slug' => $slug, 'post_content' => $faker->text],
+                                'post' => ['post_title' => $name, 'post_slug' => $slug, 'post_content' => $faker->text, 'post_parent' => $post->getKey()],
                                 'taxonomy' => ['category' => [$category->getKey()], 'tag' => [$tag->getKey()]]
                             ])
                          ->assertStatus(302)
@@ -64,7 +66,7 @@ class PostControllerTest extends TestCase
                          ->assertSessionHas('global_message.status', 200)
                          ->assertSessionHasNoErrors(); //Return Valid, Data Complete
 
-        $this->assertDatabaseHas(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getTableName(), ['post_slug' => $slug]);
+        $this->assertDatabaseHas(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getTableName(), ['post_slug' => $slug, 'post_parent' => $post->getKey()]);
 
         $post = \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::where(['post_slug' => $slug])->first();
 
@@ -96,7 +98,7 @@ class PostControllerTest extends TestCase
         $response = $this->actingAs($user)
                         ->from(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@create').'?code='.encrypt($post->getKey()))
                         ->post(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@store'), [
-                            'post' => ['post_title' => $post->post_title, 'post_slug' => $post->post_slug, 'post_content' => $post->post_content],
+                            'post' => ['post_title' => $post->post_title, 'post_slug' => $post->post_slug, 'post_content' => $post->post_content, 'post_parent' => $post->getKey()],
                             $post->getKeyName() => encrypt($post->getKey()),
                             '_method' => 'PUT'
                         ])

@@ -8,6 +8,7 @@ class Post extends Model
 {
     protected $fillable = [];
     protected $table = 'posts';
+    protected $primaryKey = 'id_posts';
 
     public function postMeta()
     {

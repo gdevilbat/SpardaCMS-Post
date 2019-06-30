@@ -8,6 +8,7 @@ class TermRelationship extends Model
 {
     protected $fillable = [];
     protected $table = 'term_relationships';
+    protected $primaryKey = 'id_term_relationships';
 
     public function taxonomy()
     {

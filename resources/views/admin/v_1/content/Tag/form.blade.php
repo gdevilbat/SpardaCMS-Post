@@ -91,7 +91,7 @@
                 </div>
                 {{csrf_field()}}
                 @if(isset($_GET['code']))
-                    <input type="hidden" name="id" value="{{$_GET['code']}}">
+                    <input type="hidden" name="{{\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey()}}" value="{{$_GET['code']}}">
                 @endif
                 {{$method}}
                 <div class="m-portlet__foot m-portlet__foot--fit">

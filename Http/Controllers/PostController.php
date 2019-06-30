@@ -50,10 +50,10 @@ class PostController extends CoreController
 
     public function serviceMaster(Request $request)
     {
-        $column = ['id', 'post_title', 'author', 'categories', 'tags','comment', 'created_at'];
+        $column = [\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), 'post_title', 'author', 'categories', 'tags','comment', 'created_at'];
 
         $length = !empty($request->input('length')) ? $request->input('length') : 10 ;
-        $column = !empty($request->input('order.0.column')) ? $column[$request->input('order.0.column')] : 'id' ;
+        $column = !empty($request->input('order.0.column')) ? $column[$request->input('order.0.column')] : \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey() ;
         $dir = !empty($request->input('order.0.dir')) ? $request->input('order.0.dir') : 'DESC' ;
         $searchValue = $request->input('search')['value'];
 
@@ -96,7 +96,7 @@ class PostController extends CoreController
             {
                 if(Auth::user()->can('read-'.$this->post_type, $post))
                 {
-                    $data[$i][0] = $post->id;
+                    $data[$i][0] = $post->getKey();
                     $data[$i][1] = $post->post_title;
                     $data[$i][2] = $post->author->name;
 
@@ -153,7 +153,7 @@ class PostController extends CoreController
         if(isset($_GET['code']))
         {
             $this->data['post'] = $this->post_repository->with(['postMeta', 'taxonomies'])->find(decrypt($_GET['code']));
-            $this->data['parents'] = $this->post_m->where('post_type', $this->post_type)->where('id', '!=', decrypt($_GET['code']))->get();
+            $this->data['parents'] = $this->post_m->where('post_type', $this->post_type)->where(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), '!=', decrypt($_GET['code']))->get();
             $this->data['method'] = method_field('PUT');
             $this->authorize('update-'.$this->post_type, $this->data['post']);
         }
@@ -196,7 +196,7 @@ class PostController extends CoreController
         else
         {
             $validator->addRules([
-                'post.post_slug' => 'max:191|unique:'.$this->post_m->getTable().',post_slug,'.decrypt($request->input('id')).',id'
+                'post.post_slug' => 'max:191|unique:'.$this->post_m->getTable().',post_slug,'.decrypt($request->input(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())).','.\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey()
             ]);
         }
 
@@ -213,8 +213,8 @@ class PostController extends CoreController
         }
         else
         {
-            $data = $request->except('_token', '_method', 'password_confirmation', 'role_id', 'id');
-            $post = $this->post_repository->findOrFail(decrypt($request->input('id')));
+            $data = $request->except('_token', '_method', 'password_confirmation', 'role_id', \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey());
+            $post = $this->post_repository->findOrFail(decrypt($request->input(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())));
             $this->authorize('update-'.$this->post_type, $post);
         }
 
@@ -241,7 +241,7 @@ class PostController extends CoreController
 
                 $meta = [];
 
-                $request_meta = $request->except('post', 'taxonomy','meta.feature_image', '_token', '_method', 'password_confirmation', 'role_id', 'id');
+                $request_meta = $request->except('post', 'taxonomy','meta.feature_image', '_token', '_method', 'password_confirmation', 'role_id', \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey());
 
                 if(array_key_exists('meta', $request_meta))
                 {
@@ -251,11 +251,11 @@ class PostController extends CoreController
 
                 foreach ($meta as $key => $value) 
                 {
-                    $postmeta = $this->postmeta_m->where(['post_id' => $post->id, 'meta_key' => $key])->first();
+                    $postmeta = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => $key])->first();
                     if(empty($postmeta))
                         $postmeta = new $this->postmeta_m;
 
-                    $postmeta->post_id = $post->id;
+                    $postmeta->post_id = $post->getKey();
                     $postmeta->meta_key = $key;
                     $postmeta->meta_value = $value;
                     $postmeta->save();
@@ -265,18 +265,18 @@ class PostController extends CoreController
                 {
                     $path = $request->file('meta.feature_image')->store('post/'.$post->post_slug,'public');
 
-                    $postmeta = $this->postmeta_m->where(['post_id' => $post->id, 'meta_key' => 'feature_image'])->first();
+                    $postmeta = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => 'feature_image'])->first();
                     if(empty($postmeta))
                     {
                         $postmeta = new $this->postmeta_m;
                     }
                     else
                     {
-                        $tmp = $this->postmeta_m->where(['post_id' => $post->id, 'meta_key' => 'feature_image'])->first()->meta_value;
+                        $tmp = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => 'feature_image'])->first()->meta_value;
                         Storage::disk('public')->delete($tmp);
                     }
 
-                    $postmeta->post_id = $post->id;
+                    $postmeta->post_id = $post->getKey();
                     $postmeta->meta_key = 'feature_image';
                     $postmeta->meta_value = $path;
                     $postmeta->save();
@@ -292,13 +292,13 @@ class PostController extends CoreController
                 {
                     foreach ($request->input('taxonomy.category') as $key => $value) 
                     {
-                        $category_data = $this->term_relationship_repository->getByAttributes(['object_id' => $post->id, 'term_taxonomy_id' => $value]);
+                        $category_data = $this->term_relationship_repository->getByAttributes(['object_id' => $post->getKey(), 'term_taxonomy_id' => $value]);
 
                         if($category_data->count() == 0)
                         {
                             $category = new $this->term_relationship_m;
                             $category->term_taxonomy_id = $value;
-                            $category->object_id = $post->id;
+                            $category->object_id = $post->getKey();
                             $category->save();
                         }
 
@@ -307,14 +307,14 @@ class PostController extends CoreController
 
                 $self = $this;
                 $data_category = $request->has('taxonomy.category') ? $request->input('taxonomy.category') : [];
-                $remove_category_relation = $this->term_relationship_m->where('object_id', $post->id)
+                $remove_category_relation = $this->term_relationship_m->where('object_id', $post->getKey())
                                                                ->whereNotIn('term_taxonomy_id', $data_category)
                                                                ->whereHas('taxonomy', function($query) use ($self){
                                                                     $query->where('taxonomy', $self->category);
                                                                })
-                                                               ->pluck('id');
+                                                               ->pluck(\Gdevilbat\SpardaCMS\Modules\Post\Entities\TermRelationship::getPrimaryKey());
 
-               $this->term_relationship_m->whereIn('id', $remove_category_relation)->delete();
+               $this->term_relationship_m->whereIn(\Gdevilbat\SpardaCMS\Modules\Post\Entities\TermRelationship::getPrimaryKey(), $remove_category_relation)->delete();
             
             /*=====  End of Category Relationship  ======*/
 
@@ -326,13 +326,13 @@ class PostController extends CoreController
                 {
                     foreach ($request->input('taxonomy.tag') as $key => $value) 
                     {
-                        $tag_data = $this->term_relationship_repository->getByAttributes(['object_id' => $post->id, 'term_taxonomy_id' => $value]);
+                        $tag_data = $this->term_relationship_repository->getByAttributes(['object_id' => $post->getKey(), 'term_taxonomy_id' => $value]);
 
                         if($tag_data->count() == 0)
                         {
                             $tag = new $this->term_relationship_m;
                             $tag->term_taxonomy_id = $value;
-                            $tag->object_id = $post->id;
+                            $tag->object_id = $post->getKey();
                             $tag->save();
                         }
 
@@ -341,14 +341,14 @@ class PostController extends CoreController
 
                 $self = $this;
                 $data_tag = $request->has('taxonomy.tag') ? $request->input('taxonomy.tag') : [];
-                $remove_tag_relation = $this->term_relationship_m->where('object_id', $post->id)
+                $remove_tag_relation = $this->term_relationship_m->where('object_id', $post->getKey())
                                                                ->whereNotIn('term_taxonomy_id', $data_tag)
                                                                ->whereHas('taxonomy', function($query) use ($self){
                                                                     $query->where('taxonomy', $self->tag);
                                                                })
-                                                               ->pluck('id');
+                                                               ->pluck(\Gdevilbat\SpardaCMS\Modules\Post\Entities\TermRelationship::getPrimaryKey());
 
-               $this->term_relationship_m->whereIn('id', $remove_tag_relation)->delete();
+               $this->term_relationship_m->whereIn(\Gdevilbat\SpardaCMS\Modules\Post\Entities\TermRelationship::getPrimaryKey(), $remove_tag_relation)->delete();
             
             /*=====  End of Tag Relationship  ======*/
             
@@ -394,7 +394,7 @@ class PostController extends CoreController
      */
     public function destroy(Request $request)
     {
-        $query = $this->post_m->findOrFail(decrypt($request->input('id')));
+        $query = $this->post_m->findOrFail(decrypt($request->input(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())));
         $this->authorize('delete-'.$this->post_type, $query);
 
         try {

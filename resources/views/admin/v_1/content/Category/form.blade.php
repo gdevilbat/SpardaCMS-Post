@@ -95,7 +95,7 @@
                             <select name="taxonomy[parent_id]" class="form-control m-input m-input--solid">
                                 <option value="" selected>-- Non Parent --</option>
                                 @foreach ($parents as $parent)
-                                    <option value="{{$parent->id}}" {{old('taxonomy.parent_id') && old('taxonomy.parent_id') == $parent->id ? 'selected' : (!empty($taxonomy->parent) && $taxonomy->parent->id == $parent->id ? 'selected' : '')}}>-- {{ucfirst($parent->name)}} --</option>
+                                    <option value="{{$parent->getKey()}}" {{old('taxonomy.parent_id') && old('taxonomy.parent_id') == $parent->getKey() ? 'selected' : (!empty($taxonomy->parent) && $taxonomy->parent->getKey() == $parent->getKey() ? 'selected' : '')}}>-- {{ucfirst($parent->name)}} --</option>
                                 @endforeach
                             </select>
                         </div>
@@ -104,7 +104,7 @@
                 </div>
                 {{csrf_field()}}
                 @if(isset($_GET['code']))
-                    <input type="hidden" name="id" value="{{$_GET['code']}}">
+                    <input type="hidden" name="{{\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey()}}" value="{{$_GET['code']}}">
                 @endif
                 {{$method}}
                 <div class="m-portlet__foot m-portlet__foot--fit">
