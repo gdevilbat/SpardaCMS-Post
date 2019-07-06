@@ -162,7 +162,7 @@
                                             <label for="exampleInputEmail1">Category</label>
                                         </div>
                                         <div class="col-12">
-                                            <select class="form-control m-input select2" name="taxonomy[category][]" multiple>
+                                            <select class="form-control m-input select2" name="taxonomy[category][]">
                                                 @foreach ($categories as $category)
                                                     <option value="{{$category->getKey()}}" {{!empty($post->taxonomies) && in_array($category->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()) ? 'selected' : ''}}>{{$category->term->name}}</option>
                                                 @endforeach
