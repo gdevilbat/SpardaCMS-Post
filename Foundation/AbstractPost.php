@@ -90,7 +90,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
             $i = 0;
             foreach ($this->data['posts'] as $key_post => $post) 
             {
-                if(Auth::user()->can('read-'.$this->getPostType(), $post))
+                if(Auth::user()->can('read-'.$this->getModule(), $post))
                 {
                     $data[$i][0] = $post->getKey();
                     $data[$i][1] = $post->post_title;
@@ -151,7 +151,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
             $this->data['post'] = $this->post_repository->with(['postMeta', 'taxonomies'])->find(decrypt($_GET['code']));
             $this->data['parents'] = $this->post_m->where('post_type', $this->getPostType())->where(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), '!=', decrypt($_GET['code']))->get();
             $this->data['method'] = method_field('PUT');
-            $this->authorize('update-'.$this->getPostType(), $this->data['post']);
+            $this->authorize('update-'.$this->getModule(), $this->data['post']);
         }
 
         return view($this->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->getPostType()).'.form', $this->data);
@@ -198,7 +198,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         {
             $data = $request->except('_token', '_method', 'password_confirmation', 'role_id', \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey());
             $post = $this->post_repository->findOrFail(decrypt($request->input(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())));
-            $this->authorize('update-'.$this->getPostType(), $post);
+            $this->authorize('update-'.$this->getModule(), $post);
         }
 
         foreach ($data['post'] as $key => $value) 
@@ -380,7 +380,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
     public function destroy(Request $request)
     {
         $query = $this->post_m->findOrFail(decrypt($request->input(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())));
-        $this->authorize('delete-'.$this->getPostType(), $query);
+        $this->authorize('delete-'.$this->getModule(), $query);
 
         try {
             
