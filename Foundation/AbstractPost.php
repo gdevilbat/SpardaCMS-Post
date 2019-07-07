@@ -339,22 +339,22 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
             if($request->isMethod('POST'))
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\\'.ucfirst($this->getModule()).'\Http\Controllers\\'.ucfirst($this->getModule()).'Controller@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add Post!'));
+                return redirect(action('\Gdevilbat\SpardaCMS\Modules\\'.ucfirst($this->getModule()).'\Http\Controllers\\'.ucfirst($this->getPostType()).'Controller@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add '.ucfirst($this->getPostType()).'!'));
             }
             else
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\\'.ucfirst($this->getModule()).'\Http\Controllers\\'.ucfirst($this->getModule()).'Controller@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update Post!'));
+                return redirect(action('\Gdevilbat\SpardaCMS\Modules\\'.ucfirst($this->getModule()).'\Http\Controllers\\'.ucfirst($this->getPostType()).'Controller@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update '.ucfirst($this->getPostType()).'!'));
             }
         }
         else
         {
             if($request->isMethod('POST'))
             {
-                return redirect()->back()->with('global_message', array('status' => 400, 'message' => 'Failed To Add Post!'));
+                return redirect()->back()->with('global_message', array('status' => 400, 'message' => 'Failed To Add '.ucfirst($this->getPostType()).'!'));
             }
             else
             {
-                return redirect()->back()->with('global_message', array('status' => 400, 'message' => 'Failed To Update Post!'));
+                return redirect()->back()->with('global_message', array('status' => 400, 'message' => 'Failed To Update '.ucfirst($this->getPostType()).'!'));
             }
         }
 
@@ -386,7 +386,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
             
             if($query->delete())
             {
-                return redirect()->back()->with('global_message', array('status' => 200,'message' => 'Successfully Delete Post!'));
+                return redirect()->back()->with('global_message', array('status' => 200,'message' => 'Successfully Delete '.ucfirst($this->getPostType()).'!'));
             }
             
         } catch (\Exception $e) {

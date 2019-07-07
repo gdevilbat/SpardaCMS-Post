@@ -5,16 +5,23 @@ namespace Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-use Gdevilbat\SpardaCMS\Modules\Taxonomy\Http\Controllers\TaxonomyController;
+use Gdevilbat\SpardaCMS\Modules\Taxonomy\Foundation\AbstractTaxonomy;
+
+use Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy as Taxonomy_m;
 
 use Validator;
 use Auth;
 
-class CategoryController extends TaxonomyController
+class CategoryController extends AbstractTaxonomy
 {
-    protected $module = 'post';
-    protected $mod_dir = 'Category';
-    protected $taxonomy = 'category';
+    public function __construct()
+    {
+        parent::__construct();
+        $this->module = 'post';
+        $this->mod_dir = 'Category';
+        $this->taxonomy = 'category';
+
+    }
 
     public function store(Request $request)
     {
