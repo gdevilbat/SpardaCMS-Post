@@ -41,7 +41,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
     public function index()
     {
-        return view($this->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->getModule()).'.master', $this->data);
+        return view($this->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->getPostType()).'.master', $this->data);
     }
 
     public function serviceMaster(Request $request)
@@ -154,7 +154,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
             $this->authorize('update-'.$this->getPostType(), $this->data['post']);
         }
 
-        return view($this->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->getModule()).'.form', $this->data);
+        return view($this->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->getPostType()).'.form', $this->data);
     }
 
     /**
@@ -363,7 +363,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
     
     public function getActionTable($post)
     {
-        $view = View::make($this->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->getModule()).'.service_master', [
+        $view = View::make($this->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->getPostType()).'.service_master', [
             'post' => $post
         ]);
 
