@@ -87,7 +87,6 @@
                             <textarea type="text" class="form-control m-input autosize" name="taxonomy[description]" placeholder="Taxonomy Description">{{old('taxonomy.description') ? old('taxonomy.description') : (!empty($taxonomy) ? $taxonomy->description : '')}}</textarea>
                         </div>
                     </div>
-                    <input type="hidden" name="taxonomy[taxonomy]" value="tag">
                 </div>
                 {{csrf_field()}}
                 @if(isset($_GET['code']))

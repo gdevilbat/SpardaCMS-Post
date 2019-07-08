@@ -339,11 +339,11 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
             if($request->isMethod('POST'))
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\\'.ucfirst($this->getModule()).'\Http\Controllers\\'.ucfirst($this->getPostType()).'Controller@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add '.ucfirst($this->getPostType()).'!'));
+                return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add '.ucfirst($this->getPostType()).'!'));
             }
             else
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\\'.ucfirst($this->getModule()).'\Http\Controllers\\'.ucfirst($this->getPostType()).'Controller@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update '.ucfirst($this->getPostType()).'!'));
+                return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update '.ucfirst($this->getPostType()).'!'));
             }
         }
         else

@@ -70,7 +70,7 @@ class TagController extends AbstractTaxonomy
 
         $taxonomy->term_id = $term->getKey();
         $taxonomy->description = $request->input('taxonomy.description');
-        $taxonomy->taxonomy = $request->input('taxonomy.taxonomy');
+        $taxonomy->taxonomy = $this->getTaxonomy();
 
         if($request->isMethod('POST'))
         {
@@ -86,11 +86,11 @@ class TagController extends AbstractTaxonomy
         {
             if($request->isMethod('POST'))
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\TagController@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add Tag!'));
+                return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add Tag!'));
             }
             else
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\TagController@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update Tag!'));
+                return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update Tag!'));
             }
         }
         else

@@ -100,7 +100,6 @@
                             </select>
                         </div>
                     </div>
-                    <input type="hidden" name="taxonomy[taxonomy]" value="category">
                 </div>
                 {{csrf_field()}}
                 @if(isset($_GET['code']))

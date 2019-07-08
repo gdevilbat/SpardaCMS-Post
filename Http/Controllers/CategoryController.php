@@ -11,6 +11,7 @@ use Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy as Taxonomy_m;
 
 use Validator;
 use Auth;
+use Route;
 
 class CategoryController extends AbstractTaxonomy
 {
@@ -70,7 +71,7 @@ class CategoryController extends AbstractTaxonomy
 
         $taxonomy->term_id = $term->getKey();
         $taxonomy->description = $request->input('taxonomy.description');
-        $taxonomy->taxonomy = $request->input('taxonomy.taxonomy');
+        $taxonomy->taxonomy = $this->getTaxonomy();
         $taxonomy->parent_id = $request->input('taxonomy.parent_id');
 
         if($request->isMethod('POST'))
@@ -87,11 +88,11 @@ class CategoryController extends AbstractTaxonomy
         {
             if($request->isMethod('POST'))
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add Category!'));
+                return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add Category!'));
             }
             else
             {
-                return redirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update Category!'));
+                return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update Category!'));
             }
         }
         else
