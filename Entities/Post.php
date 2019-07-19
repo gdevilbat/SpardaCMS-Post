@@ -75,6 +75,14 @@ class Post extends Model
     	}
     }
 
+    public function getPostStatusBoolAttribute()
+    {
+        if($this->post_status == 'publish')
+            return true;
+
+        return false;
+    }
+
     public static function getTableName()
     {
         return with(new Static)->getTable();

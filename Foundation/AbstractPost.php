@@ -125,8 +125,18 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                     }
 
                     $data[$i][5] = '';
-                    $data[$i][6] = $post->created_at->toDateTimeString();
-                    $data[$i][7] = $this->getActionTable($post);
+
+                    if($post->post_status_bool)
+                    {
+                        $data[$i][6] = '<a href="#" class="btn btn-success p-1">'.$post->post_status.'</a>';;
+                    }
+                    else
+                    {
+                        $data[$i][6] = '<a href="#" class="btn btn-warning p-1">'.$post->post_status.'</a>';;
+                    }
+
+                    $data[$i][7] = $post->created_at->toDateTimeString();
+                    $data[$i][8] = $this->getActionTable($post);
                     $i++;
                 }
             }
