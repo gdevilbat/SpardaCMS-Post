@@ -172,13 +172,9 @@ abstract class AbstractPost extends CoreController implements InterfacePost
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $callback = null)
     {
-        $validator = Validator::make($request->all(), [
-            'post.post_title' => 'required',
-            'post.post_slug' => 'required|max:191',
-            'meta.feature_image' => 'max:500'
-        ]);
+        $validator = $this->validatePost($request);
 
         if($request->isMethod('POST'))
         {
@@ -344,7 +340,18 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                $this->term_relationship_m->whereIn(\Gdevilbat\SpardaCMS\Modules\Post\Entities\TermRelationship::getPrimaryKey(), $remove_tag_relation)->delete();
             
             /*=====  End of Tag Relationship  ======*/
+
+
+            /*==================================================
+            =            Callback Action After Post            =
+            ==================================================*/
+                
+                if(!empty($callback))
+                {
+                    call_user_func_array(array($this, $callback), array($request, $post));
+                }
             
+            /*=====  End of Callback Action After Post  ======*/
             
 
             if($request->isMethod('POST'))
@@ -402,6 +409,17 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         } catch (\Exception $e) {
             return redirect()->back()->with('global_message', array('status' => 200,'message' => 'Failed Delete Post, It\'s Has Been Used!'));
         }
+    }
+
+    public function validatePost(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'post.post_title' => 'required',
+            'post.post_slug' => 'required|max:191',
+            'meta.feature_image' => 'max:500'
+        ]);
+
+        return $validator;
     }
 
 

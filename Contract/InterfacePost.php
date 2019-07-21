@@ -28,11 +28,19 @@ interface InterfacePost
     public function create();
 
     /**
+     * Update a resource
+     * @param  $model
+     * @param  array $data
+     * @return $model
+     */
+    public function validatePost(Request $request);
+
+    /**
      * Paginate the model to $perPage items per page
      * @param  int $perPage
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function store(Request $request);
+    public function store(Request $request, callable $callback);
 
     /**
      * Create a resource
