@@ -90,6 +90,30 @@
                                         <input type="text" class="form-control m-input" id="slug" placeholder="Post Slug" name="post[post_slug]" value="{{old('post.post_slug') ? old('post.post_slug') : (!empty($post) ? $post->post_slug : '')}}">
                                     </div>
                                 </div>
+                                <div class="form-group m-form__group d-flex px-0 flex-wrap">
+                                    <div class="col-3 d-flex justify-content-end py-3">
+                                        <label for="exampleInputEmail1">Category</label>
+                                    </div>
+                                    <div class="col">
+                                        <select class="form-control m-input select2" name="taxonomy[category][]">
+                                            @foreach ($categories as $category)
+                                                <option value="{{$category->getKey()}}" {{!empty($post->taxonomies) && in_array($category->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()) ? 'selected' : ''}}>{{$category->term->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group d-flex px-0 flex-wrap">
+                                    <div class="col-3 d-flex justify-content-end py-3">
+                                        <label for="exampleInputEmail1">Tag</label>
+                                    </div>
+                                    <div class="col">
+                                        <select class="form-control m-input select2" name="taxonomy[tag][]" multiple>
+                                            @foreach ($tags as $tag)
+                                                <option value="{{$tag->getKey()}}" {{!empty($post->taxonomies) && in_array($tag->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()) ? 'selected' : ''}}>{{$tag->term->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="form-group m-form__group d-flex px-0">
                                     <div class="col-12">
                                         <textarea class="form-control m-input texteditor" placeholder="Post Content" name="post[post_content]">{{old('post.post_content') ? old('post.post_content') : (!empty($post) ? $post->post_content : '')}}</textarea>
@@ -159,26 +183,26 @@
                                 <div class="m-portlet__body px-0">
                                     <div class="form-group m-form__group d-flex px-0 flex-wrap">
                                         <div class="col-12 d-flex py-3">
-                                            <label for="exampleInputEmail1">Category</label>
+                                            <label for="exampleInputEmail1">Feature Image</label>
                                         </div>
                                         <div class="col-12">
-                                            <select class="form-control m-input select2" name="taxonomy[category][]">
-                                                @foreach ($categories as $category)
-                                                    <option value="{{$category->getKey()}}" {{!empty($post->taxonomies) && in_array($category->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()) ? 'selected' : ''}}>{{$category->term->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group m-form__group d-flex px-0 flex-wrap">
-                                        <div class="col-12 d-flex py-3">
-                                            <label for="exampleInputEmail1">Tag</label>
-                                        </div>
-                                        <div class="col-12">
-                                            <select class="form-control m-input select2" name="taxonomy[tag][]" multiple>
-                                                @foreach ($tags as $tag)
-                                                    <option value="{{$tag->getKey()}}" {{!empty($post->taxonomies) && in_array($tag->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()) ? 'selected' : ''}}>{{$tag->term->name}}</option>
-                                                @endforeach
-                                            </select>
+                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                                    @if(!empty($post) && !empty($post->postMeta->where('meta_key', 'feature_image')->first()) && $post->postMeta->where('meta_key', 'feature_image')->first()->meta_value != null)
+                                                        <img src="{{url('public/storage/'.$post->postMeta->where('meta_key', 'feature_image')->first()->meta_value)}}" alt=""> 
+                                                    @else
+                                                        <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt=""> 
+                                                    @endif
+                                                </div>
+                                                <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
+                                                <div>
+                                                    <span class="btn btn-file btn-accent m-btn m-btn--air m-btn--custom">
+                                                        <span class="fileinput-new"> Select image </span>
+                                                        <span class="fileinput-exists"> Change </span>
+                                                        <input type="file" name="meta[feature_image]"> </span>
+                                                    <a href="javascript:;" class="btn default fileinput-exists" data-dismiss="fileinput"> Remove </a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -240,38 +264,6 @@
                                         </div>
                                         <div class="col-12">
                                             <input type="number" class="form-control m-input" name="post[menu_order]" min="0" value="{{old('post.menu_order') ? old('post.menu_order') : (!empty($post) ? $post->menu_order : 0)}}" placeholder="Menu Order">
-                                        </div>
-                                    </div>
-                                </div>
-                            <!--end::Form-->
-                        </div>
-                    </div>
-                    <div class="col-12 px-0">
-                        <div class="m-portlet m-portlet--tab">
-                            <!--begin::Form-->
-                                <div class="m-portlet__body px-0">
-                                    <div class="form-group m-form__group d-flex px-0 flex-wrap">
-                                        <div class="col-12 d-flex py-3">
-                                            <label for="exampleInputEmail1">Feature Image</label>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                                    @if(!empty($post) && !empty($post->postMeta->where('meta_key', 'feature_image')->first()) && $post->postMeta->where('meta_key', 'feature_image')->first()->meta_value != null)
-                                                        <img src="{{url('public/storage/'.$post->postMeta->where('meta_key', 'feature_image')->first()->meta_value)}}" alt=""> 
-                                                    @else
-                                                        <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt=""> 
-                                                    @endif
-                                                </div>
-                                                <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
-                                                <div>
-                                                    <span class="btn btn-file btn-accent m-btn m-btn--air m-btn--custom">
-                                                        <span class="fileinput-new"> Select image </span>
-                                                        <span class="fileinput-exists"> Change </span>
-                                                        <input type="file" name="meta[feature_image]"> </span>
-                                                    <a href="javascript:;" class="btn default fileinput-exists" data-dismiss="fileinput"> Remove </a>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
