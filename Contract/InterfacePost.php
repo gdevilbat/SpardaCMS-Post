@@ -71,5 +71,13 @@ interface InterfacePost
      * @param  array $data
      * @return $model
      */
+    public function parsingDataTable($posts);
+
+    /**
+     * Update a resource
+     * @param  $model
+     * @param  array $data
+     * @return $model
+     */
     public function getActionTable($post);
 }

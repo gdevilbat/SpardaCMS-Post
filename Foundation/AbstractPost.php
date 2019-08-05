@@ -82,13 +82,20 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $this->data['dir'] = $dir;
         $this->data['posts'] = $filtered->offset($request->input('start'))->limit($length)->get();
 
+        $table =  $this->parsingDataTable($this->data['posts']);
+
+        return ['data' => $table, 'draw' => (integer)$request->input('draw'), 'recordsTotal' => $recordsTotal, 'recordsFiltered' => $filteredTotal];
+    }
+
+    public function parsingDataTable($posts)
+    {
         /*=========================================
         =            Parsing Datatable            =
         =========================================*/
             
             $data = array();
             $i = 0;
-            foreach ($this->data['posts'] as $key_post => $post) 
+            foreach ($posts as $key_post => $post) 
             {
                 if(Auth::user()->can('read-'.$this->getModule(), $post))
                 {
@@ -140,10 +147,10 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                     $i++;
                 }
             }
+
+            return $data;
         
         /*=====  End of Parsing Datatable  ======*/
-        
-        return ['data' => $data, 'draw' => (integer)$request->input('draw'), 'recordsTotal' => $recordsTotal, 'recordsFiltered' => $filteredTotal];
     }
 
     /**
