@@ -89,7 +89,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
     public function getColumnOrder()
     {
-        return [\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), 'post_title', 'author', 'categories', 'tags','comment', 'created_at'];
+        return [\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), 'post_title', 'author', 'categories', 'tags','comment', 'status','created_at'];
     }
 
     public function parsingDataTable($posts)
