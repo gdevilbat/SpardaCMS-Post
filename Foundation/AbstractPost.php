@@ -104,51 +104,51 @@ abstract class AbstractPost extends CoreController implements InterfacePost
             {
                 if(Auth::user()->can('read-'.$this->getModule(), $post))
                 {
-                    $data[$i][0] = $post->getKey();
-                    $data[$i][1] = $post->post_title;
-                    $data[$i][2] = $post->author->name;
+                    $data[$i][] = $post->getKey();
+                    $data[$i][] = $post->post_title;
+                    $data[$i][] = $post->author->name;
 
                     $categories = $post->taxonomies->where('taxonomy', $this->getCategory());
                     if($categories->count() > 0)
                     {
-                        $data[$i][3] = '';
+                        $data[$i][] = '';
                         foreach ($categories as $key => $category) 
                         {
-                            $data[$i][3] .= '<span class="badge badge-danger mx-1">'.$category->term->name.'</span>';
+                            $data[$i][count($data[$i]) - 1] .= '<span class="badge badge-danger mx-1">'.$category->term->name.'</span>';
                         }
                     }
                     else
                     {
-                        $data[$i][3] = '-';
+                        $data[$i][] = '-';
                     }
 
                     $tags = $post->taxonomies->where('taxonomy', 'tag');
                     if($tags->count() > 0)
                     {
-                        $data[$i][4] = '';
+                        $data[$i][] = '';
                         foreach ($tags as $key => $tag) 
                         {
-                            $data[$i][4] .= '<span class="badge badge-danger mx-1">'.$tag->term->name.'</span>';
+                            $data[$i][count($data[$i]) - 1] .= '<span class="badge badge-danger mx-1">'.$tag->term->name.'</span>';
                         }
                     }
                     else
                     {
-                        $data[$i][4] = '-';
+                        $data[$i][] = '-';
                     }
 
-                    $data[$i][5] = '';
+                    $data[$i][] = '';
 
                     if($post->post_status_bool)
                     {
-                        $data[$i][6] = '<a href="#" class="btn btn-success p-1">'.$post->post_status.'</a>';;
+                        $data[$i][] = '<a href="#" class="btn btn-success p-1">'.$post->post_status.'</a>';;
                     }
                     else
                     {
-                        $data[$i][6] = '<a href="#" class="btn btn-warning p-1">'.$post->post_status.'</a>';;
+                        $data[$i][] = '<a href="#" class="btn btn-warning p-1">'.$post->post_status.'</a>';;
                     }
 
-                    $data[$i][7] = $post->created_at->toDateTimeString();
-                    $data[$i][8] = $this->getActionTable($post);
+                    $data[$i][] = $post->created_at->toDateTimeString();
+                    $data[$i][] = $this->getActionTable($post);
                     $i++;
                 }
             }
