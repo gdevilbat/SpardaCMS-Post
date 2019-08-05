@@ -71,7 +71,7 @@ interface InterfacePost
      * @param  array $data
      * @return $model
      */
-    public function getColumnOrder()
+    public function getColumnOrder();
 
     /**
      * Update a resource
