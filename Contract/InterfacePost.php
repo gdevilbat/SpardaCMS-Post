@@ -64,6 +64,14 @@ interface InterfacePost
      * @return $model
      */
     public function getPostType();
+    
+    /**
+     * Update a resource
+     * @param  $model
+     * @param  array $data
+     * @return $model
+     */
+    public function getColumnOrder()
 
     /**
      * Update a resource

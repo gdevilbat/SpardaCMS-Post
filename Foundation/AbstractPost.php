@@ -46,7 +46,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
     public function serviceMaster(Request $request)
     {
-        $column = [\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), 'post_title', 'author', 'categories', 'tags','comment', 'created_at'];
+        $column = $this->getColumnOrder();
 
         $length = !empty($request->input('length')) ? $request->input('length') : 10 ;
         $column = !empty($request->input('order.0.column')) ? $column[$request->input('order.0.column')] : \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey() ;
@@ -85,6 +85,11 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $table =  $this->parsingDataTable($this->data['posts']);
 
         return ['data' => $table, 'draw' => (integer)$request->input('draw'), 'recordsTotal' => $recordsTotal, 'recordsFiltered' => $filteredTotal];
+    }
+
+    public function getColumnOrder()
+    {
+        return [\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), 'post_title', 'author', 'categories', 'tags','comment', 'created_at'];
     }
 
     public function parsingDataTable($posts)
