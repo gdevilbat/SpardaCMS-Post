@@ -184,7 +184,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request, callable $callback = null)
+    public function store(Request $request, $callback = null)
     {
         $validator = $this->validatePost($request);
 

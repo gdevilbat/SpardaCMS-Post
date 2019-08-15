@@ -40,7 +40,7 @@ interface InterfacePost
      * @param  int $perPage
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function store(Request $request, callable $callback);
+    public function store(Request $request, $callback = null);
 
     /**
      * Create a resource
