@@ -77,18 +77,18 @@
                 @endcan
 
                 <!--begin: Datatable -->
-                <table class="table table-striped" id="data-post" width="100%">
+                <table class="table table-striped display responsive nowrap data-table-ajax" id="data-post" data-ajax="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@serviceMaster')}}" width="100%">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Title</th>
+                            <th data-priority="1">ID</th>
+                            <th data-priority="2">Title</th>
                             <th class="no-sort">Author</th>
                             <th class="no-sort">Categories</th>
                             <th class="no-sort">Tags</th>
                             <th class="no-sort">Comment</th>
-                            <th class="no-sort">Status</th>
+                            <th class="no-sort" data-priority="3">Status</th>
                             <th>Created At</th>
-                            <th class="no-sort">Action</th>
+                            <th class="no-sort" data-priority="4">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,25 +107,4 @@
 </div>
 {{-- End of Row --}}
 
-@endsection
-
-@section('page_script_js')
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#data-post').DataTable( {
-                "processing": true,
-                "serverSide": true,
-                "order": [],
-                "ajax": $.fn.dataTable.pipeline( {
-                    url: '{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@serviceMaster')}}',
-                    pages: 5 // number of pages to cache
-                }),
-                 "columnDefs": [
-                ],
-                "drawCallback": function( settings ) {
-                    deleteData();
-                }
-            } );
-        } );
-    </script>
 @endsection
