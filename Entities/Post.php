@@ -25,6 +25,14 @@ class Post extends Model
         return $this->belongsTo('\Gdevilbat\SpardaCMS\Modules\Core\Entities\User', 'created_by');
     }
 
+    public function getGalleriesAttribute()
+    {
+        if(!empty($this->postMeta->where('meta_key', 'gallery')->first()))
+            return json_decode(json_encode($this->postMeta->where('meta_key', 'gallery')->first()->meta_value));
+
+        return [];
+    }
+
     /**
      * Set the Post Status.
      *
