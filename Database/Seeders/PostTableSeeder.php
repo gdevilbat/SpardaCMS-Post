@@ -20,7 +20,7 @@ class PostTableSeeder extends Seeder
 
         $faker = \Faker\Factory::create();
 
-        DB::table('posts')->insert([
+        $id = DB::table('posts')->insertGetId(
             [
                 'post_title' => $faker->word,
                 'post_slug' => str_slug($faker->word),
@@ -29,6 +29,14 @@ class PostTableSeeder extends Seeder
                 'post_status' => 'draft',
                 'created_by' => 1,
                 'modified_by' => 1,
+                'created_at' => \Carbon\Carbon::now()
+            ]
+        );
+
+        DB::table('term_relationships')->insert([
+            [
+                'term_taxonomy_id' => 1,
+                'object_id' => $id,
                 'created_at' => \Carbon\Carbon::now()
             ]
         ]);
