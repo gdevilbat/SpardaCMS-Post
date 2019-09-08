@@ -53,10 +53,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $dir = !empty($request->input('order.0.dir')) ? $request->input('order.0.dir') : 'DESC' ;
         $searchValue = $request->input('search')['value'];
 
-        $query = $this->post_m->with('taxonomies.term')
-                                ->where('post_type', $this->getPostType())
-                                ->orderBy($column, $dir)
-                                ->limit($length);
+        $query = $this->getQuerybuilder($column, $dir);
 
         $recordsTotal = $query->count();
         $filtered = $query;
@@ -85,6 +82,15 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $table =  $this->parsingDataTable($this->data['posts']);
 
         return ['data' => $table, 'draw' => (integer)$request->input('draw'), 'recordsTotal' => $recordsTotal, 'recordsFiltered' => $filteredTotal];
+    }
+
+    function getQuerybuilder($column, $dir)
+    {
+        $query = $this->post_m->with('taxonomies.term')
+                                ->where('post_type', $this->getPostType())
+                                ->orderBy($column, $dir);
+
+        return $query;
     }
 
     public function getColumnOrder()

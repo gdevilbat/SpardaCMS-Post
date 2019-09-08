@@ -12,4 +12,14 @@ class PostMeta extends Model
     protected $casts = [
         'meta_value' => 'array',
     ];
+
+    public static function getTableName()
+    {
+        return with(new Static)->getTable();
+    }
+
+    public static function getPrimaryKey()
+    {
+        return with(new Static)->getKeyName();
+    }
 }
