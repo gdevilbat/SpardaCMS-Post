@@ -97,9 +97,14 @@ class Post extends Model
         {
             if(!empty($request->input('tags')))
             {
-                $query = $query->whereHas('taxonomies', function($query) use ($request){
-                            $query->whereIn(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey(), $request->input('tags'));
-                        });
+                $tags = $request->input('tags');
+
+                foreach ($tags as $tag) 
+                {
+                    $query = $query->whereHas('taxonomies', function($query) use ($tag){
+                                $query->where(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey(), $tag);
+                            });
+                }
             }
         }
 
