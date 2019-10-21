@@ -91,6 +91,21 @@ class Post extends Model
         return false;
     }
 
+    public function scopeFilterTags($query, \Illuminate\Http\Request $request)
+    {
+        if(count($request->input()) > 0)
+        {
+            if(!empty($request->input('tags')))
+            {
+                $query = $query->whereHas('taxonomies', function($query) use ($request){
+                            $query->whereIn(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey(), $request->input('tags'));
+                        });
+            }
+        }
+
+        return $query;
+    }
+
     public static function getTableName()
     {
         return with(new Static)->getTable();
