@@ -4,6 +4,7 @@ namespace Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 
 use Gdevilbat\SpardaCMS\Modules\Taxonomy\Foundation\AbstractTaxonomy;
 
@@ -26,42 +27,58 @@ class CategoryController extends AbstractTaxonomy
 
     public function store(Request $request)
     {
-    	 $validator = Validator::make($request->all(), [
-            'term.name' => 'required|max:191',
-            'term.slug' => 'required|max:191',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                        ->withErrors($validator)
-                        ->withInput();
-        }
-
         if($request->isMethod('POST'))
         {
-            $data = $request->except('_token', '_method');
             $taxonomy = new $this->taxonomy_m;
         }
         else
         {
-            $data = $request->except('_token', '_method', \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey());
             $taxonomy = $this->taxonomy_repository->with('term')->findOrFail(decrypt($request->input(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())));
             $this->authorize('update-taxonomy', $taxonomy);
         }
 
-        if($request->isMethod('POST'))
-        {
-            $term = $this->terms_repository->findBySlug($request->input('term.slug'));
-        }
-        else
-        {
-            $term = $this->terms_repository->find($taxonomy->term->getKey());
-        }
+        $validator = Validator::make($request->all(), [
+            'term.name' => 'required|max:191',
+            'term.slug' => 'required|max:191',
+        ]);
+
+        $term = $this->terms_repository->findBySlug($request->input('term.slug'));
 
         if(empty($term))
         {
         	$term = new $this->terms_m;
         	$term->created_by = Auth::id();
+        }
+        else
+        {
+            $self = $this;
+            $validator->addRules([
+                'term.slug' => [
+                    function ($attribute, $value, $fail) use ($request, $term, $taxonomy, $self) {
+                        if($request->isMethod('POST'))
+                        {
+                            $checker = \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::where(['term_id' => $term->getKey(), 'taxonomy' => $self->getTaxonomy()])
+                                                                                                    ->count();
+                        }
+                        else
+                        {
+                            $checker = \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::where(['term_id' => $term->getKey(), 'taxonomy' => $self->getTaxonomy()])
+                                                                                                    ->where(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey(), '!=', $taxonomy->getKey())
+                                                                                                    ->count();
+                        }
+
+                        if ($checker > 0) {
+                            $fail($attribute.' Is Exist, Try Another');
+                        }
+                    }
+                ]
+            ]);
+        }
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
         }
         
     	$term->name = $request->input('term.name');
