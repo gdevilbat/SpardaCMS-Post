@@ -86,7 +86,7 @@
                             <th class="no-sort">Categories</th>
                             <th class="no-sort">Tags</th>
                             <th class="no-sort">Comment</th>
-                            <th class="no-sort" data-priority="4">Status</th>
+                            <th data-priority="4">Status</th>
                             <th>Created At</th>
                             <th class="no-sort" data-priority="3">Action</th>
                         </tr>
