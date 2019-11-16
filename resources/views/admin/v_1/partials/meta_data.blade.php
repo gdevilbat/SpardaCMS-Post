@@ -56,7 +56,7 @@
                         <div class="fileinput fileinput-new" data-provides="fileinput">
                             <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
                                 @if(!empty($post) && !empty($post->postMeta->where('meta_key', 'feature_image')->first()) && $post->postMeta->where('meta_key', 'feature_image')->first()->meta_value != null)
-                                    <img src="{{Storage::disk('public')->url($post->postMeta->where('meta_key', 'feature_image')->first()->meta_value)}}" alt=""> 
+                                    <img src="{{generate_storage_url($post->postMeta->where('meta_key', 'feature_image')->first()->meta_value)}}" alt=""> 
                                 @else
                                     <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt=""> 
                                 @endif
