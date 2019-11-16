@@ -18,6 +18,7 @@ use View;
 use Auth;
 use Storage;
 use Validator;
+use Carbon\Carbon;
 
 /**
  * Class EloquentCoreRepository
@@ -270,7 +271,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
                 if($request->hasFile('meta.feature_image'))
                 {
-                    $path = $request->file('meta.feature_image')->store('post/'.$post->post_slug);
+                    $path = $request->file('meta.feature_image')->store(Carbon::now()->format('Y/m'));
 
                     $postmeta = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => 'feature_image'])->first();
                     if(empty($postmeta))
