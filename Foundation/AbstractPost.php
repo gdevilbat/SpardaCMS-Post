@@ -3,11 +3,14 @@
 namespace Gdevilbat\SpardaCMS\Modules\Post\Foundation;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 use Gdevilbat\SpardaCMS\Modules\Post\Contract\InterfacePost;
 use Gdevilbat\SpardaCMS\Modules\Core\Http\Controllers\CoreController;
 
 use Gdevilbat\SpardaCMS\Modules\Post\Entities\Post as Post_m;
+use Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\Terms as Terms_m;
 use Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy as TermTaxonomy_m;
 use Gdevilbat\SpardaCMS\Modules\Post\Entities\PostMeta as PostMeta_m;
 use Gdevilbat\SpardaCMS\Modules\Post\Entities\TermRelationship as TermRelationship_m;
@@ -32,6 +35,8 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         parent::__construct();
         $this->post_m = new Post_m;
         $this->post_repository = new Repository(new Post_m);
+        $this->terms_m = new Terms_m;
+        $this->terms_repository = new Repository(new Terms_m);
         $this->term_taxonomy_m = new TermTaxonomy_m;
         $this->term_taxonomy_repository = new Repository(new TermTaxonomy_m);
         $this->postmeta_m = new PostMeta_m;
@@ -330,16 +335,51 @@ abstract class AbstractPost extends CoreController implements InterfacePost
             =            Tag Relationship            =
             =============================================*/
 
+                $tmp_taxonomy_id = [];
+
                 if($request->has('taxonomy.tag'))
                 {
+                    
                     foreach ($request->input('taxonomy.tag') as $key => $value) 
                     {
-                        $tag_data = $this->term_relationship_repository->getByAttributes(['object_id' => $post->getKey(), 'term_taxonomy_id' => $value]);
+                        
+                        /*----------  Create Terms First  ----------*/
+                        $term = $this->terms_repository->findBySlug(Str::slug($value, '-'));
+
+                        if(empty($term))
+                        {
+                            $term = new $this->terms_m;
+                            $term->name = $value;
+                            $term->slug = Str::slug($value, '-');
+                            $term->created_by = Auth::id();
+                            $term->modified_by = Auth::id();
+                            $term->save();
+                        }
+
+
+                        /*----------  Create Tag Taxonomy  ----------*/
+                        $taxonomy = TermTaxonomy_m::where(['term_id' => $term->getKey(), 'taxonomy' => 'tag'])->first();
+
+                        if(empty($taxonomy))
+                        {
+                            $taxonomy = new $this->term_taxonomy_m;
+                            $taxonomy->created_by = Auth::id();
+                            $taxonomy->modified_by = Auth::id();
+                            $taxonomy->taxonomy = 'tag';
+                            $taxonomy->term_id = $term->getKey();
+                            $taxonomy->save();
+                        }
+
+                        $tmp_taxonomy_id = Arr::prepend($tmp_taxonomy_id, $taxonomy->getKey());
+
+
+                        /*----------  Create Tag Relationship  ----------*/
+                        $tag_data = $this->term_relationship_repository->getByAttributes(['object_id' => $post->getKey(), 'term_taxonomy_id' => $taxonomy->getKey()]);
 
                         if($tag_data->count() == 0)
                         {
                             $tag = new $this->term_relationship_m;
-                            $tag->term_taxonomy_id = $value;
+                            $tag->term_taxonomy_id = $taxonomy->getKey();
                             $tag->object_id = $post->getKey();
                             $tag->save();
                         }
@@ -348,9 +388,8 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                 }
 
                 $self = $this;
-                $data_tag = $request->has('taxonomy.tag') ? $request->input('taxonomy.tag') : [];
                 $remove_tag_relation = $this->term_relationship_m->where('object_id', $post->getKey())
-                                                               ->whereNotIn('term_taxonomy_id', $data_tag)
+                                                               ->whereNotIn('term_taxonomy_id', $tmp_taxonomy_id)
                                                                ->whereHas('taxonomy', function($query) use ($self){
                                                                     $query->where('taxonomy', $self->getTag());
                                                                })
@@ -437,6 +476,21 @@ abstract class AbstractPost extends CoreController implements InterfacePost
             'post.post_slug' => 'required|max:191',
             'meta.feature_image' => 'max:500'
         ]);
+
+        if(!empty($request->input('taxonomy.tag')))
+        {
+            $validator->addRules([
+                    'taxonomy.tag' => [
+                        function ($attribute, $value, $fail) use ($request) {
+                            foreach ($value as $key => $val) {
+                                if ($val > 191) {
+                                    $fail($attribute.' . Tag Text Cannot Be Longer Than 191');
+                                }
+                            }
+                        },
+                ],      
+            ]);
+        }
 
         return $validator;
     }

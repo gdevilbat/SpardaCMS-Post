@@ -51,7 +51,7 @@ class PostControllerTest extends TestCase
         $slug = $faker->word;
 
         $category = \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::where(['taxonomy' => 'category'])->first();
-        $tag = \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::where(['taxonomy' => 'tag'])->first();
+        $tag = \Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::with('term')->where(['taxonomy' => 'tag'])->first();
 
         $post = \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::where('post_type', 'post')->first();
 
@@ -59,7 +59,7 @@ class PostControllerTest extends TestCase
                          ->from(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@create'))
                          ->post(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@store'), [
                                 'post' => ['post_title' => $name, 'post_slug' => $slug, 'post_content' => $faker->text, 'post_parent' => $post->getKey()],
-                                'taxonomy' => ['category' => [$category->getKey()], 'tag' => [$tag->getKey()]]
+                                'taxonomy' => ['category' => [$category->getKey()], 'tag' => [$tag->term->name]]
                             ])
                          ->assertStatus(302)
                          ->assertRedirect(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@index'))

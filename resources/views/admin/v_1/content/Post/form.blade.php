@@ -107,9 +107,11 @@
                                         <label for="exampleInputEmail1">Tag</label>
                                     </div>
                                     <div class="col">
-                                        <select class="form-control m-input select2" name="taxonomy[tag][]" multiple>
+                                        <select class="form-control m-input taginput w-100" name="taxonomy[tag][]" multiple>
                                             @foreach ($tags as $tag)
-                                                <option value="{{$tag->getKey()}}" {{!empty($post->taxonomies) && in_array($tag->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()) ? 'selected' : ''}}>{{$tag->term->name}}</option>
+                                                @if(!empty($post->taxonomies) && in_array($tag->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()))
+                                                    <option value="{{$tag->term->name}}">{{$tag->term->name}}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>
@@ -149,4 +151,33 @@
     {{Html::script(module_asset_url('core:assets/metronic-v5/global/plugins/ckeditor_4/ckeditor.js'))}}
     {{Html::script(module_asset_url('core:assets/metronic-v5/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js'))}}
     {{Html::script(module_asset_url('core:assets/metronic-v5/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'))}}
+    {{Html::script(module_asset_url('core:assets/metronic-v5/global/plugins/typeahead/typeahead.bundle.min.js'))}}
+@endsection
+
+@section('page_script_js')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var tag = new Bloodhound({
+              datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
+              queryTokenizer: Bloodhound.tokenizers.whitespace,
+              prefetch: {
+                url: "{{action('\Gdevilbat\SpardaCMS\Modules\Taxonomy\Http\Controllers\TaxonomyController@getSuggestionTag')}}",
+                filter: function(list) {
+                  return $.map(list, function(tag) {
+                    return { name: tag }; });
+                }
+              }
+            });
+            tag.initialize();
+
+            $('.taginput').tagsinput({
+              typeaheadjs: {
+                name: 'tag',
+                displayKey: 'name',
+                valueKey: 'name',
+                source: tag.ttAdapter()
+              }
+            });
+        });
+    </script>
 @endsection
