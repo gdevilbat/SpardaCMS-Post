@@ -97,7 +97,11 @@
                                     <div class="col">
                                         <select class="form-control m-input select2" name="taxonomy[category][]">
                                             @foreach ($categories as $category)
-                                                <option value="{{$category->getKey()}}" {{!empty($post->taxonomies) && in_array($category->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()) ? 'selected' : ''}}>{{$category->term->name}}</option>
+                                                @if(old('taxonomy.category'))
+                                                    <option value="{{$category->getKey()}}" {{in_array($category->getKey(), old('taxonomy.category')) ? 'selected' : ''}}>{{$category->term->name}}</option>
+                                                @else
+                                                    <option value="{{$category->getKey()}}" {{!empty($post->taxonomies) && in_array($category->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()) ? 'selected' : ''}}>{{$category->term->name}}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>
@@ -108,11 +112,17 @@
                                     </div>
                                     <div class="col">
                                         <select class="form-control m-input taginput w-100" name="taxonomy[tag][]" multiple>
-                                            @foreach ($tags as $tag)
-                                                @if(!empty($post->taxonomies) && in_array($tag->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()))
-                                                    <option value="{{$tag->term->name}}">{{$tag->term->name}}</option>
-                                                @endif
-                                            @endforeach
+                                            @if(old('taxonomy.tag'))
+                                                @foreach(old('taxonomy.tag') as $tag)
+                                                    <option value="{{$tag}}">{{$tag}}</option>
+                                                @endforeach
+                                            @else
+                                                @foreach ($tags as $tag)
+                                                    @if(!empty($post->taxonomies) && in_array($tag->getKey(), $post->taxonomies->pluck(\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey())->toArray()))
+                                                        <option value="{{$tag->term->name}}">{{$tag->term->name}}</option>
+                                                    @endif
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
                                 </div>
