@@ -177,13 +177,13 @@ abstract class AbstractPost extends CoreController implements InterfacePost
     public function create()
     {
         $this->data['method'] = method_field('POST');
-        $this->data['parents'] = $this->post_m->where('post_type', $this->getPostType())->get();
+        //$this->data['parents'] = $this->post_m->where('post_type', $this->getPostType())->get();
         $this->data['categories'] = $this->term_taxonomy_m->with('term')->where(['taxonomy' => $this->getCategory()])->get();
         $this->data['tags'] = $this->term_taxonomy_m->with('term')->where(['taxonomy' => $this->getTag()])->get();
         if(isset($_GET['code']))
         {
             $this->data['post'] = $this->post_repository->with(['postMeta', 'taxonomies'])->find(decrypt($_GET['code']));
-            $this->data['parents'] = $this->post_m->where('post_type', $this->getPostType())->where(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), '!=', decrypt($_GET['code']))->get();
+            //$this->data['parents'] = $this->post_m->where('post_type', $this->getPostType())->where(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), '!=', decrypt($_GET['code']))->get();
             $this->data['method'] = method_field('PUT');
             $this->authorize('update-'.$this->getModule(), $this->data['post']);
         }

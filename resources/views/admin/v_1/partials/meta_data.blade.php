@@ -110,7 +110,7 @@
         <!--end::Form-->
     </div>
 </div>
-<div class="col-12 px-0">
+{{--<div class="col-12 px-0">
     <div class="m-portlet m-portlet--tab">
         <!--begin::Form-->
             <div class="m-portlet__body px-0">
@@ -139,3 +139,4 @@
         <!--end::Form-->
     </div>
 </div>
+--}}
