@@ -62,10 +62,6 @@ Route::group(['prefix' => 'control', 'middleware' => 'core.menu'], function() {
 			    Route::put('form', 'TagController@store')->name('tag');
 			    Route::delete('form', 'TagController@destroy')->name('tag');
 
-			    Route::group(['prefix' => 'api'], function() {
-				    Route::get('master', 'TagController@serviceMaster')->middleware('can:menu-post');
-			    });
-	        
 	        /*=====  End of Tag CMS  ======*/
 		});
         
