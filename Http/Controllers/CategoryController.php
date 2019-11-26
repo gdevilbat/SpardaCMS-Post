@@ -124,4 +124,11 @@ class CategoryController extends AbstractTaxonomy
             }
         }
     }
+
+    public function getParentQuery()
+    {
+        return $this->terms_m->whereHas('taxonomies', function($query){
+            $query->where('taxonomy', $this->taxonomy);
+        });
+    }
 }

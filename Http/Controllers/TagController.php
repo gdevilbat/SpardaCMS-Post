@@ -121,4 +121,9 @@ class TagController extends AbstractTaxonomy
             }
         }
     }
+
+    public function getParentQuery()
+    {
+        return true;
+    }
 }
