@@ -45,7 +45,7 @@
             </div>
 
             <!--begin::Form-->
-            <form class="m-form m-form--fit m-form--label-align-right" action="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@store')}}" method="post">
+            <form class="m-form m-form--fit m-form--label-align-right" action="{{route('cms.post-category.store')}}" method="post">
                 <div class="m-portlet__body">
                     <div class="col-md-5 offset-md-4">
                         @if (!empty(session('global_message')))

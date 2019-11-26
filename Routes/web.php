@@ -20,14 +20,14 @@ Route::group(['prefix' => 'control', 'middleware' => 'core.menu'], function() {
 	        =            Post CMS            =
 	        =============================================*/
 	        
-			    Route::get('master', 'PostController@index')->middleware('can:menu-post')->name('post');
-			    Route::get('form', 'PostController@create')->name('post');
-			    Route::post('form', 'PostController@store')->middleware('can:create-post')->name('post');
-			    Route::put('form', 'PostController@store')->name('post');
-			    Route::delete('form', 'PostController@destroy')->name('post');
+			    Route::get('master', 'PostController@index')->middleware('can:menu-post')->name('cms.post.master');
+			    Route::get('form', 'PostController@create')->name('cms.post.create');
+			    Route::post('form', 'PostController@store')->middleware('can:create-post')->name('cms.post.store');
+			    Route::put('form', 'PostController@store')->name('cms.post.store');
+			    Route::delete('form', 'PostController@destroy')->name('cms.post.delete');
 
 			    Route::group(['prefix' => 'api'], function() {
-				    Route::get('master', 'PostController@serviceMaster')->middleware('can:menu-post');
+				    Route::get('master', 'PostController@serviceMaster')->middleware('can:menu-post')->name('cms.post.service-master');
 			    });
 	        
 	        /*=====  End of Post CMS  ======*/
@@ -38,14 +38,14 @@ Route::group(['prefix' => 'control', 'middleware' => 'core.menu'], function() {
 	        =            Category CMS            =
 	        =============================================*/
 	        
-			    Route::get('master', 'CategoryController@index')->middleware('can:menu-post')->name('category');
-			    Route::get('form', 'CategoryController@create')->name('category');
-			    Route::post('form', 'CategoryController@store')->middleware('can:create-post')->name('category');
-			    Route::put('form', 'CategoryController@store')->name('category');
-			    Route::delete('form', 'CategoryController@destroy')->name('category');
+			    Route::get('master', 'CategoryController@index')->middleware('can:menu-post')->name('cms.post-category.master');
+			    Route::get('form', 'CategoryController@create')->name('cms.post-category.create');
+			    Route::post('form', 'CategoryController@store')->middleware('can:create-post')->name('cms.post-category.store');
+			    Route::put('form', 'CategoryController@store')->name('cms.post-category.store');
+			    Route::delete('form', 'CategoryController@destroy')->name('cms.post-category.delete');
 
 			    Route::group(['prefix' => 'api'], function() {
-				    Route::get('master', 'CategoryController@serviceMaster')->middleware('can:menu-post');
+				    Route::get('master', 'CategoryController@serviceMaster')->middleware('can:menu-post')->name('cms.post-category.service-master');
 			    });
 	        
 	        /*=====  End of Category CMS  ======*/
@@ -56,14 +56,14 @@ Route::group(['prefix' => 'control', 'middleware' => 'core.menu'], function() {
 	        =            Tag CMS            =
 	        =============================================*/
 	        
-			    Route::get('master', 'TagController@index')->middleware('can:menu-post')->name('tag');
-			    Route::get('form', 'TagController@create')->name('tag');
-			    Route::post('form', 'TagController@store')->middleware('can:create-post')->name('tag');
-			    Route::put('form', 'TagController@store')->name('tag');
-			    Route::delete('form', 'TagController@destroy')->name('tag');
+			    Route::get('master', 'TagController@index')->middleware('can:menu-post')->name('cms.post-tag.master');
+			    Route::get('form', 'TagController@create')->name('cms.post-tag.create');
+			    Route::post('form', 'TagController@store')->middleware('can:create-post')->name('cms.post-tag.store');
+			    Route::put('form', 'TagController@store')->name('cms.post-tag.store');
+			    Route::delete('form', 'TagController@destroy')->name('cms.post-tag.delete');
 
 			    Route::group(['prefix' => 'api'], function() {
-                   Route::get('master', 'TagController@serviceMaster')->middleware('can:menu-post');
+                   Route::get('master', 'TagController@serviceMaster')->middleware('can:menu-post')->name('cms.post-tag.service-master');
                 });
 
 	        /*=====  End of Tag CMS  ======*/

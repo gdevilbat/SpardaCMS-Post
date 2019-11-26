@@ -6,11 +6,11 @@
         <div class="dropdown-menu dropdown-menu-left">
             @can('update-taxonomy', $taxonomy)
                 <button class="dropdown-item" type="button">
-                    <a class="m-link m-link--state m-link--info" href="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@create').'?code='.encrypt($taxonomy->getKey())}}"><i class="fa fa-edit"> Edit</i></a>
+                    <a class="m-link m-link--state m-link--info" href="{{route('cms.post-category.create').'?code='.encrypt($taxonomy->getKey())}}"><i class="fa fa-edit"> Edit</i></a>
                 </button>
             @endcan
             @can('delete-taxonomy', $taxonomy)
-                <form action="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@destroy')}}" method="post" accept-charset="utf-8">
+                <form action="{{route('cms.post-category.delete')}}" method="post" accept-charset="utf-8">
                     {{method_field('DELETE')}}
                     {{csrf_field()}}
                     <input type="hidden" name="{{\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy::getPrimaryKey()}}" value="{{encrypt($taxonomy->getKey())}}">

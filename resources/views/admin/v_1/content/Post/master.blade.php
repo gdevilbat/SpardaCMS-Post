@@ -66,7 +66,7 @@
                 @can('create-post')
                     <div class="row mb-4">
                         <div class="col-md-5">
-                            <a href="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@create')}}" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air">
+                            <a href="{{route('cms.post.create')}}" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air">
                                 <span>
                                     <i class="la la-plus"></i>
                                     <span>Add New Post</span>
@@ -77,7 +77,7 @@
                 @endcan
 
                 <!--begin: Datatable -->
-                <table class="table table-striped display responsive nowrap data-table-ajax" id="data-post" data-ajax="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@serviceMaster')}}" width="100%">
+                <table class="table table-striped display responsive nowrap data-table-ajax" id="data-post" data-ajax="{{route('cms.post.service-master')}}" width="100%">
                     <thead>
                         <tr>
                             <th data-priority="1">ID</th>

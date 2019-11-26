@@ -72,7 +72,7 @@
                 @can('create-taxonomy')
                     <div class="row mb-4">
                         <div class="col-md-5">
-                            <a href="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@create')}}" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air">
+                            <a href="{{route('cms.post-category.create')}}" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air">
                                 <span>
                                     <i class="la la-plus"></i>
                                     <span>Add New Category</span>
@@ -83,7 +83,7 @@
                 @endcan
 
                 <!--begin: Datatable -->
-                <table class="table table-striped data-table-ajax" id="data-taxonomy" data-ajax="{{action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\CategoryController@serviceMaster')}}" width="100%">
+                <table class="table table-striped data-table-ajax" id="data-taxonomy" data-ajax="{{route('cms.post-category.service-master')}}" width="100%">
                     <thead>
                         <tr>
                             <th>ID</th>

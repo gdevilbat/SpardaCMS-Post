@@ -124,6 +124,6 @@ class TagController extends AbstractTaxonomy
 
     public function getParentQuery()
     {
-        return true;
+        return $this->terms_m;
     }
 }
