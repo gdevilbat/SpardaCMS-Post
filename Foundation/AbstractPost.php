@@ -268,10 +268,17 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                     if(empty($postmeta))
                         $postmeta = new $this->postmeta_m;
 
-                    $postmeta->post_id = $post->getKey();
-                    $postmeta->meta_key = $key;
-                    $postmeta->meta_value = $value;
-                    $postmeta->save();
+                    if(!empty($value))
+                    {
+                        $postmeta->post_id = $post->getKey();
+                        $postmeta->meta_key = $key;
+                        $postmeta->meta_value = $value;
+                        $postmeta->save();
+                    }
+                    else
+                    {
+                        $postmeta->delete();
+                    }
                 }
 
                 if($request->hasFile('meta.feature_image'))
