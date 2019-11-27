@@ -283,7 +283,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
                 if($request->hasFile('meta.feature_image'))
                 {
-                    $path = $request->file('meta.feature_image')->store(Carbon::now()->format('Y/m'));
+                    $path = $request->file('meta.feature_image')->storeAs(Carbon::now()->format('Y/m'), $request->file('meta.feature_image')->getClientOriginalName());
 
                     $postmeta = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => 'feature_image'])->first();
                     if(empty($postmeta))
@@ -293,7 +293,10 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                     else
                     {
                         $tmp = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => 'feature_image'])->first()->meta_value;
-                        Storage::delete($tmp);
+                        
+                        if($tmp != $path)
+                            Storage::delete($tmp);
+
                     }
 
                     $postmeta->post_id = $post->getKey();
