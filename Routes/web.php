@@ -20,14 +20,14 @@ Route::group(['prefix' => 'control', 'middleware' => 'core.menu'], function() {
 	        =            Post CMS            =
 	        =============================================*/
 	        
-			    Route::get('master', 'PostController@index')->middleware('can:menu-post')->name('cms.post.master');
-			    Route::get('form', 'PostController@create')->name('cms.post.create');
-			    Route::post('form', 'PostController@store')->middleware('can:create-post')->name('cms.post.store');
-			    Route::put('form', 'PostController@store')->name('cms.post.store');
-			    Route::delete('form', 'PostController@destroy')->name('cms.post.delete');
+			    Route::get('master', 'PostController@index')->middleware('can:menu-post')->name('cms.post-data.master');
+			    Route::get('form', 'PostController@create')->name('cms.post-data.create');
+			    Route::post('form', 'PostController@store')->middleware('can:create-post')->name('cms.post-data.store');
+			    Route::put('form', 'PostController@store')->name('cms.post-data.store');
+			    Route::delete('form', 'PostController@destroy')->name('cms.post-data.delete');
 
 			    Route::group(['prefix' => 'api'], function() {
-				    Route::get('master', 'PostController@serviceMaster')->middleware('can:menu-post')->name('cms.post.service-master');
+				    Route::get('master', 'PostController@serviceMaster')->middleware('can:menu-post')->name('cms.post-data.service-master');
 			    });
 	        
 	        /*=====  End of Post CMS  ======*/

@@ -11,11 +11,11 @@
             @endif
             @can('update-post', $post)
                 <button class="dropdown-item" type="button">
-                    <a class="m-link m-link--state m-link--info" href="{{route('cms.post.create').'?code='.encrypt($post->getKey())}}"><i class="fa fa-edit"> Edit</i></a>
+                    <a class="m-link m-link--state m-link--info" href="{{route('cms.post-data.create').'?code='.encrypt($post->getKey())}}"><i class="fa fa-edit"> Edit</i></a>
                 </button>
             @endcan
             @can('delete-post', $post)
-                <form action="{{route('cms.post.delete')}}" method="post" accept-charset="utf-8">
+                <form action="{{route('cms.post-data.delete')}}" method="post" accept-charset="utf-8">
                     {{method_field('DELETE')}}
                     {{csrf_field()}}
                     <input type="hidden" name="{{\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey()}}" value="{{encrypt($post->getKey())}}">
