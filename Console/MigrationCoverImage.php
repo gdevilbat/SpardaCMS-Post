@@ -41,7 +41,16 @@ class MigrationCoverImage extends Command
      */
     public function handle()
     {
+
+        $existing_cover_image =  PostMeta::where('meta_key', 'cover_image')->pluck('post_id');
+
+        $count_progress  = PostMeta::where('meta_key', 'feature_image')->whereNotIn('post_id', $existing_cover_image)->count();
+
         $feature_images = PostMeta::where('meta_key', 'feature_image')->get();
+
+        $bar = $this->output->createProgressBar($count_progress);
+
+        $bar->start();
 
 
         foreach ($feature_images as $key => $feature_image) 
@@ -55,7 +64,9 @@ class MigrationCoverImage extends Command
                 $new_cover_image->meta_key = 'cover_image';
                 $new_cover_image->meta_value = ['file' => $feature_image->meta_value, 'caption' => ''];
                 $new_cover_image->save();
+                $bar->advance();
             }
+
         }
 
         $this->info("Cover Image Has Been Migrated");
