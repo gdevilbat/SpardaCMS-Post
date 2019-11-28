@@ -50,13 +50,13 @@
             <div class="m-portlet__body px-0">
                 <div class="form-group m-form__group d-flex px-0 flex-wrap">
                     <div class="col-12 d-flex py-3">
-                        <label for="exampleInputEmail1">Feature Image</label>
+                        <label for="exampleInputEmail1">Cover Image</label>
                     </div>
                     <div class="col-12">
                         <div class="fileinput fileinput-new" data-provides="fileinput">
                             <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                @if(!empty($post) && !empty($post->postMeta->where('meta_key', 'feature_image')->first()) && $post->postMeta->where('meta_key', 'feature_image')->first()->meta_value != null)
-                                    <img src="{{generate_storage_url($post->postMeta->where('meta_key', 'feature_image')->first()->meta_value)}}" alt=""> 
+                                @if(!empty($post) && !empty($post->postMeta->where('meta_key', 'cover_image')->first()) && $post->postMeta->where('meta_key', 'cover_image')->first()->meta_value['file'] != null)
+                                    <img src="{{generate_storage_url($post->postMeta->where('meta_key', 'cover_image')->first()->meta_value['file'])}}" alt=""> 
                                 @else
                                     <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt=""> 
                                 @endif
@@ -66,9 +66,18 @@
                                 <span class="btn btn-file btn-accent m-btn m-btn--air m-btn--custom">
                                     <span class="fileinput-new"> Select image </span>
                                     <span class="fileinput-exists"> Change </span>
-                                    <input type="file" name="meta[feature_image]"> </span>
+                                    <input type="file" name="meta[cover_image][file]"> </span>
                                 <a href="javascript:;" class="btn default fileinput-exists" data-dismiss="fileinput"> Remove </a>
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group d-flex px-0 flex-wrap">
+                        <div class="col-12 d-flex py-3">
+                            <label for="exampleInputEmail1">Caption Image</label>
+                        </div>
+                        <div class="col-12">
+                            <input type="text" class="form-control m-input count-textarea" placeholder="Cover Caption" name="meta[cover_image][caption]" data-target-count-text="#caption-cover" value="{{old('meta.cover_image.caption') ? old('meta.cover_image.caption') : (!empty($post) && $post->postMeta->where('meta_key', 'cover_image')->first() ? $post->postMeta->where('meta_key', 'cover_image')->first()->meta_value['caption'] : '')}}">
+                            <div class="pt-1"><span id="caption-cover"></span> Character</div>
                         </div>
                     </div>
                 </div>

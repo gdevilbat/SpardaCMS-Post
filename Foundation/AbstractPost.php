@@ -254,7 +254,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
                 $meta = [];
 
-                $request_meta = $request->except('post', 'taxonomy','meta.feature_image', '_token', '_method', 'password_confirmation', 'role_id', \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey());
+                $request_meta = $request->except('post', 'taxonomy','meta.cover_image', '_token', '_method', 'password_confirmation', 'role_id', \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey());
 
                 if(array_key_exists('meta', $request_meta))
                 {
@@ -281,27 +281,43 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                     }
                 }
 
-                if($request->hasFile('meta.feature_image'))
+                if($request->has('meta.cover_image'))
                 {
-                    $path = $request->file('meta.feature_image')->storeAs(Carbon::now()->format('Y/m'), $request->file('meta.feature_image')->getClientOriginalName());
+                    $cover_image = $request->input('meta.cover_image');
+                    $postmeta = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => 'cover_image'])->first();
 
-                    $postmeta = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => 'feature_image'])->first();
+                    $path = null;
+
+                    if($request->hasFile('meta.cover_image.file'))
+                    {
+                        $path = $request->file('meta.cover_image.file')->storeAs(Carbon::now()->format('Y/m'), $request->file('meta.cover_image.file')->getClientOriginalName());
+                    }
+
                     if(empty($postmeta))
                     {
                         $postmeta = new $this->postmeta_m;
                     }
                     else
                     {
-                        $tmp = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => 'feature_image'])->first()->meta_value;
+                        $tmp = $postmeta->meta_value['file'];
                         
-                        if($tmp != $path)
+                        if($tmp != $path && !empty($path))
+                        {
                             Storage::delete($tmp);
+                        }
+                        else
+                        {
+                            $path = $tmp;
+                        }
 
                     }
 
+
+                    $cover_image['file'] = $path;
+
                     $postmeta->post_id = $post->getKey();
-                    $postmeta->meta_key = 'feature_image';
-                    $postmeta->meta_value = $path;
+                    $postmeta->meta_key = 'cover_image';
+                    $postmeta->meta_value = $cover_image;
                     $postmeta->save();
                 }
             
@@ -484,7 +500,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $validator = Validator::make($request->all(), [
             'post.post_title' => 'required',
             'post.post_slug' => 'required|max:191',
-            'meta.feature_image' => 'max:500'
+            'meta.cover_image.file' => 'max:500'
         ]);
 
         if(!empty($request->input('taxonomy.tag')))
