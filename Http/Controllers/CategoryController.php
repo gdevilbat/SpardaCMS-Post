@@ -127,8 +127,6 @@ class CategoryController extends AbstractTaxonomy
 
     public function getParentQuery()
     {
-        return $this->terms_m->whereHas('taxonomies', function($query){
-            $query->where('taxonomy', $this->taxonomy);
-        });
+        return $this->taxonomy_m->where('taxonomy', $this->taxonomy);
     }
 }
