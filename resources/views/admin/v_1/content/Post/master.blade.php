@@ -1,6 +1,6 @@
 @extends('core::admin.'.$theme_cms->value.'.templates.parent')
 
-@section('title_dashboard', ' Post')
+@section('title_dashboard', ' '.trans_choice('post::messages.post', 2))
 
 @section('breadcrumb')
         <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
@@ -18,7 +18,7 @@
             <li class="m-nav__separator">-</li>
             <li class="m-nav__item">
                 <a href="" class="m-nav__link">
-                    <span class="m-nav__link-text">Post</span>
+                    <span class="m-nav__link-text">{{ trans_choice('post::messages.post', 2) }}</span>
                 </a>
             </li>
         </ul>
@@ -38,7 +38,7 @@
                             <i class="fa fa-gear"></i>
                         </span>
                         <h3 class="m-portlet__head-text">
-                            Master Data of Post
+                            Master Data of {{ trans_choice('post::messages.post', 2) }}
                         </h3>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                             <a href="{{route('cms.post-data.create')}}" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air">
                                 <span>
                                     <i class="la la-plus"></i>
-                                    <span>Add New Post</span>
+                                    <span>Add New {{trans_choice('post::messages.post', 1)}}</span>
                                 </span>
                             </a>
                         </div>
@@ -81,14 +81,14 @@
                     <thead>
                         <tr>
                             <th data-priority="1">ID</th>
-                            <th data-priority="2">Title</th>
-                            <th>Author</th>
-                            <th>Categories</th>
-                            <th class="no-sort">Tags</th>
+                            <th data-priority="2">{{ trans_choice('post::messages.post_title', 2) }}</th>
+                            <th>{{ trans_choice('post::messages.post_author', 1) }}</th>
+                            <th>{{ trans_choice('post::messages.post_category', 2) }}</th>
+                            <th class="no-sort">{{ trans_choice('post::messages.post_tag', 2) }}</th>
                             <th class="no-sort">Comment</th>
-                            <th data-priority="4">Status</th>
-                            <th>Created At</th>
-                            <th class="no-sort" data-priority="3">Action</th>
+                            <th data-priority="4">{{ trans_choice('post::messages.post_status', 1) }}</th>
+                            <th>{{ trans_choice('post::messages.created_at', 1) }}</th>
+                            <th class="no-sort" data-priority="3">{{ trans_choice('post::messages.action', 1) }}</th>
                         </tr>
                     </thead>
                     <tbody>

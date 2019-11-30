@@ -16,7 +16,7 @@
             <div class="m-portlet__body px-0">
                 <div class="form-group m-form__group d-flex px-0 flex-wrap">
                     <div class="col-7 d-flex">
-                        <label for="exampleInputEmail1">Publish Post<span class="ml-1 m--font-danger" aria-required="true">*</span></label>
+                        <label for="exampleInputEmail1">Publish {{trans_choice('post::messages.post', 1)}}<span class="ml-1 m--font-danger" aria-required="true">*</span></label>
                     </div>
                     <div class="col-5">
                         <span class="m-switch m-switch--icon m-switch--danger">
