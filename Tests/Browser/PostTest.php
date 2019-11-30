@@ -36,7 +36,7 @@ class PostTest extends DuskTestCase
             $browser->script('document.getElementsByName("post[post_content]")[0].value = "'.$faker->text.'"');
             $browser->script('document.getElementsByName("post[post_status]")[0].checked = true');
             $browser->script('document.getElementsByName("post[comment_status]")[0].checked = true');
-            $browser->script('document.getElementsByName("post[post_parent]")[0].selectedIndex = 1');
+            //$browser->script('document.getElementsByName("post[post_parent]")[0].selectedIndex = 1'); Disable Post Parent For A while
             $browser->script('document.getElementsByName("taxonomy[category][]")[0].selectedIndex = 0');
             $browser->script('document.getElementsByName("taxonomy[tag][]")[0].selectedIndex = 0');
             $browser->script('document.getElementsByName("meta[meta_keyword]")[0].value = "'.$faker->name.'"');
@@ -74,7 +74,7 @@ class PostTest extends DuskTestCase
             $browser->script('document.getElementsByName("post[post_content]")[0].value = "'.$faker->text.'"');
             $browser->script('document.getElementsByName("post[post_status]")[0].checked = true');
             $browser->script('document.getElementsByName("post[comment_status]")[0].checked = true');
-            $browser->script('document.getElementsByName("post[post_parent]")[0].selectedIndex = 1');
+            //$browser->script('document.getElementsByName("post[post_parent]")[0].selectedIndex = 1'); Disable For A while
             $browser->script('document.getElementsByName("taxonomy[category][]")[0].selectedIndex = 0');
             $browser->script('document.getElementsByName("taxonomy[tag][]")[0].selectedIndex = 0');
             $browser->script('document.getElementsByName("meta[meta_keyword]")[0].value = "'.$faker->name.'"');
