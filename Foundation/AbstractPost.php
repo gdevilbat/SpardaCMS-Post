@@ -92,8 +92,13 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
     function getQuerybuilder($column, $dir)
     {
-        $query = $this->post_m->with('taxonomies.term')
+        $query = $this->post_m->leftJoin(\Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName(), \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.id', '=', Post_m::getTableName().'.created_by')
+                                ->leftJoin(TermRelationship_m::getTableName(), Post_m::getTableName().'.'.Post_m::getPrimaryKey(), '=', TermRelationship_m::getTableName().'.object_id')
+                                ->leftJoin(TermTaxonomy_m::getTableName(), TermTaxonomy_m::getTableName().'.'.TermTaxonomy_m::getPrimaryKey(), '=', TermRelationship_m::getTableName().'.term_taxonomy_id')
+                                ->leftJoin(Terms_m::getTableName(), Terms_m::getTableName().'.'.Terms_m::getPrimaryKey(), '=', TermTaxonomy_m::getTableName().'.term_id')
+                                ->with('taxonomies.term')
                                 ->where('post_type', $this->getPostType())
+                                ->select(Post_m::getTableName().'.*', \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.name as author_name', Terms_m::getTableName().'.name as category_name')
                                 ->orderBy($column, $dir);
 
         return $query;
@@ -101,7 +106,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
     public function getColumnOrder()
     {
-        return [\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), 'post_title', 'author', 'categories', 'tags','comment', 'post_status','created_at'];
+        return [\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), 'post_title', 'author_name', 'category_name', 'tags','comment', 'post_status','created_at'];
     }
 
     public function parsingDataTable($posts)

@@ -87,11 +87,11 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th class="no-sort">Term</th>
+                            <th data-priority="1">Term</th>
                             <th>Taxonomy</th>
-                            <th class="no-sort">Parent</th>
+                            <th>Parent</th>
                             <th>Created At</th>
-                            <th class="no-sort">Action</th>
+                            <th data-priority="2" class="no-sort">Action</th>
                         </tr>
                     </thead>
                     <tbody>
