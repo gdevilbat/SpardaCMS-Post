@@ -98,7 +98,8 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                                 ->leftJoin(Terms_m::getTableName(), Terms_m::getTableName().'.'.Terms_m::getPrimaryKey(), '=', TermTaxonomy_m::getTableName().'.term_id')
                                 ->with('taxonomies.term')
                                 ->where('post_type', $this->getPostType())
-                                ->select(Post_m::getTableName().'.*', \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.name as author_name', Terms_m::getTableName().'.name as category_name')
+                                ->groupBy(Post_m::getTableName().'.'.Post_m::getPrimaryKey())
+                                ->select(Post_m::getTableName().'.*', \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.name as author_name', Terms_m::getTableName().'.name as category_name', DB::raw('COUNT(id_posts) as count'))
                                 ->orderBy($column, $dir);
 
         return $query;
