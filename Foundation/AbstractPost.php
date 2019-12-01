@@ -92,6 +92,9 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
     function getQuerybuilder($column, $dir)
     {
+        config()->set('database.connections.mysql.strict', false);
+        \DB::reconnect();
+        
         $query = $this->post_m->leftJoin(\Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName(), \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.id', '=', Post_m::getTableName().'.created_by')
                                 ->leftJoin(TermRelationship_m::getTableName(), Post_m::getTableName().'.'.Post_m::getPrimaryKey(), '=', TermRelationship_m::getTableName().'.object_id')
                                 ->leftJoin(TermTaxonomy_m::getTableName(), TermTaxonomy_m::getTableName().'.'.TermTaxonomy_m::getPrimaryKey(), '=', TermRelationship_m::getTableName().'.term_taxonomy_id')
@@ -99,7 +102,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                                 ->with('taxonomies.term')
                                 ->where('post_type', $this->getPostType())
                                 ->groupBy(Post_m::getTableName().'.'.Post_m::getPrimaryKey())
-                                ->select(Post_m::getTableName().'.*', \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.name as author_name', Terms_m::getTableName().'.name as category_name', DB::raw('COUNT(id_posts) as count'))
+                                ->select(Post_m::getTableName().'.*', \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.name', Terms_m::getTableName().'.name')
                                 ->orderBy($column, $dir);
 
         return $query;
@@ -107,7 +110,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
     public function getColumnOrder()
     {
-        return [\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), 'post_title', 'author_name', 'category_name', 'tags','comment', 'post_status','created_at'];
+        return [\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), 'post_title', \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.name', Terms_m::getTableName().'.name', 'tags','comment', 'post_status','created_at'];
     }
 
     public function parsingDataTable($posts)
