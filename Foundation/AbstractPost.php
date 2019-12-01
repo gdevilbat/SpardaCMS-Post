@@ -59,6 +59,9 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $dir = !empty($request->input('order.0.dir')) ? $request->input('order.0.dir') : 'DESC' ;
         $searchValue = $request->input('search')['value'];
 
+        config()->set('database.connections.mysql.strict', false);
+        \DB::reconnect();
+
         $query = $this->getQuerybuilder($column, $dir);
 
         $recordsTotal = $query->count();
@@ -85,6 +88,9 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $this->data['dir'] = $dir;
         $this->data['posts'] = $filtered->offset($request->input('start'))->limit($length)->get();
 
+        config()->set('database.connections.mysql.strict', true);
+        \DB::reconnect();
+
         $table =  $this->parsingDataTable($this->data['posts']);
 
         return ['data' => $table, 'draw' => (integer)$request->input('draw'), 'recordsTotal' => $recordsTotal, 'recordsFiltered' => $filteredTotal];
@@ -92,9 +98,6 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
     function getQuerybuilder($column, $dir)
     {
-        config()->set('database.connections.mysql.strict', false);
-        \DB::reconnect();
-        
         $query = $this->post_m->leftJoin(\Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName(), \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.id', '=', Post_m::getTableName().'.created_by')
                                 ->leftJoin(TermRelationship_m::getTableName(), Post_m::getTableName().'.'.Post_m::getPrimaryKey(), '=', TermRelationship_m::getTableName().'.object_id')
                                 ->leftJoin(TermTaxonomy_m::getTableName(), TermTaxonomy_m::getTableName().'.'.TermTaxonomy_m::getPrimaryKey(), '=', TermRelationship_m::getTableName().'.term_taxonomy_id')
