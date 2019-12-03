@@ -109,10 +109,10 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                                 ->leftJoin(TermRelationship_m::getTableName(), Post_m::getTableName().'.'.Post_m::getPrimaryKey(), '=', TermRelationship_m::getTableName().'.object_id')
                                 ->leftJoin(TermTaxonomy_m::getTableName(), TermTaxonomy_m::getTableName().'.'.TermTaxonomy_m::getPrimaryKey(), '=', TermRelationship_m::getTableName().'.term_taxonomy_id')
                                 ->leftJoin(Terms_m::getTableName(), Terms_m::getTableName().'.'.Terms_m::getPrimaryKey(), '=', TermTaxonomy_m::getTableName().'.term_id')
-                                ->with('taxonomies.term')
+                                ->with('taxonomies.allTaxonomyParents.term', 'taxonomies.term')
                                 ->where('post_type', $this->getPostType())
                                 ->groupBy(Post_m::getTableName().'.'.Post_m::getPrimaryKey())
-                                ->select(Post_m::getTableName().'.*', \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.name', Terms_m::getTableName().'.name');
+                                ->select(Post_m::getTableName().'.*', \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.name as author_name', Terms_m::getTableName().'.name as term_name');
     }
 
     public function getColumnOrder()
@@ -142,7 +142,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                         $data[$i][] = '';
                         foreach ($categories as $key => $category) 
                         {
-                            $data[$i][count($data[$i]) - 1] .= '<span class="badge badge-danger mx-1">'.$category->term->name.'</span>';
+                            $data[$i][count($data[$i]) - 1] .= $this->getCategoryHtmlTag($this->getPostCategory($category)).'<br>';
                         }
                     }
                     else
@@ -542,6 +542,32 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         }
 
         return $validator;
+    }
+
+    public function getPostCategory($category, $text = [])
+    {
+        array_push($text, $category->term->name);
+
+        if(!empty($category->allTaxonomyParents))
+        {
+           $text = $this->getPostCategory($category->parent, $text);
+        }
+
+        return $text;
+    }
+
+    public function getCategoryHtmlTag($categories)
+    {
+        $text = '';
+
+        $categories = collect($categories)->reverse();
+
+        foreach ($categories as $key => $value) 
+        {
+            $text .= '<span class="badge badge-danger mx-1">'.$value.'</span>';
+        }
+
+        return $text;
     }
 
 
