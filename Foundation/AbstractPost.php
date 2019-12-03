@@ -142,7 +142,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                         $data[$i][] = '';
                         foreach ($categories as $key => $category) 
                         {
-                            $data[$i][count($data[$i]) - 1] .= $this->getCategoryHtmlTag($this->getPostCategory($category)).'<br>';
+                            $data[$i][count($data[$i]) - 1] .= $this->getCategoryHtmlTag($this->getPostCategory($category)).'</br>';
                         }
                     }
                     else
