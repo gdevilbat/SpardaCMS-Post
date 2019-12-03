@@ -86,7 +86,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $this->data['length'] = $length;
         $this->data['column'] = $column;
         $this->data['dir'] = $dir;
-        $this->data['posts'] = $filtered->offset($request->input('start'))->limit($length)->get();
+        $this->data['posts'] = $this->getQueryleftJoinBuilder($filtered)->offset($request->input('start'))->limit($length)->get();
 
         config()->set('database.connections.mysql.strict', true);
         \DB::reconnect();
@@ -96,19 +96,23 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         return ['data' => $table, 'draw' => (integer)$request->input('draw'), 'recordsTotal' => $recordsTotal, 'recordsFiltered' => $filteredTotal];
     }
 
-    function getQuerybuilder($column, $dir)
+    public function getQuerybuilder($column, $dir)
     {
-        $query = $this->post_m->leftJoin(\Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName(), \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.id', '=', Post_m::getTableName().'.created_by')
+        $query = $this->post_m->orderBy($column, $dir);
+
+        return $query;
+    }
+
+    public function getQueryleftJoinBuilder(\Illuminate\Database\Eloquent\Builder $post)
+    {
+        return $post->leftJoin(\Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName(), \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.id', '=', Post_m::getTableName().'.created_by')
                                 ->leftJoin(TermRelationship_m::getTableName(), Post_m::getTableName().'.'.Post_m::getPrimaryKey(), '=', TermRelationship_m::getTableName().'.object_id')
                                 ->leftJoin(TermTaxonomy_m::getTableName(), TermTaxonomy_m::getTableName().'.'.TermTaxonomy_m::getPrimaryKey(), '=', TermRelationship_m::getTableName().'.term_taxonomy_id')
                                 ->leftJoin(Terms_m::getTableName(), Terms_m::getTableName().'.'.Terms_m::getPrimaryKey(), '=', TermTaxonomy_m::getTableName().'.term_id')
                                 ->with('taxonomies.term')
                                 ->where('post_type', $this->getPostType())
                                 ->groupBy(Post_m::getTableName().'.'.Post_m::getPrimaryKey())
-                                ->select(Post_m::getTableName().'.*', \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.name', Terms_m::getTableName().'.name')
-                                ->orderBy($column, $dir);
-
-        return $query;
+                                ->select(Post_m::getTableName().'.*', \Gdevilbat\SpardaCMS\Modules\Core\Entities\User::getTableName().'.name', Terms_m::getTableName().'.name');
     }
 
     public function getColumnOrder()
