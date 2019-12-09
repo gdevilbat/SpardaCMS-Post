@@ -98,7 +98,8 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
     public function getQuerybuilder($column, $dir)
     {
-        $query = $this->post_m->orderBy($column, $dir);
+        $query = $this->post_m->where('post_type',$this->post_type)
+                                ->orderBy($column, $dir);
 
         return $query;
     }
