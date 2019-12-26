@@ -568,10 +568,20 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         return $text;
     }
 
+    public function setModule($module)
+    {
+        $this->module = $module;
+    }
+
 
     public function getModule()
     {
         return $this->module;
+    }
+
+    public function setPostType($post_type)
+    {
+        $this->post_type = $post_type;
     }
 
     public function getPostType()

@@ -17,9 +17,9 @@ class PostController extends AbstractPost
     {
         parent::__construct($post_repository);
 
-        $this->module = 'post';
-        $this->post_type = 'post';
-        $this->post_repository->setModule($this->module);
+        $this->setModule('post');
+        $this->setPostType('post');
+        $this->post_repository->setModule($this->getModule());
     }
 
     /**

@@ -55,7 +55,23 @@ interface InterfacePost
      * @param  array $data
      * @return $model
      */
+    public function setModule($module);
+
+    /**
+     * Update a resource
+     * @param  $model
+     * @param  array $data
+     * @return $model
+     */
     public function getModule();
+
+    /**
+     * Update a resource
+     * @param  $model
+     * @param  array $data
+     * @return $model
+     */
+    public function setPostType($post_type);
 
     /**
      * Update a resource
