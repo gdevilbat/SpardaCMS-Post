@@ -36,13 +36,13 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $this->post_m = new Post_m;
         $this->post_repository = $post_repository;
         $this->terms_m = new Terms_m;
-        $this->terms_repository = new Repository(new Terms_m);
+        $this->terms_repository = new Repository(new Terms_m, resolve(\Gdevilbat\SpardaCMS\Modules\Role\Repositories\Contract\AuthenticationRepository::class));
         $this->term_taxonomy_m = new TermTaxonomy_m;
-        $this->term_taxonomy_repository = new Repository(new TermTaxonomy_m);
+        $this->term_taxonomy_repository = new Repository(new TermTaxonomy_m, resolve(\Gdevilbat\SpardaCMS\Modules\Role\Repositories\Contract\AuthenticationRepository::class));
         $this->postmeta_m = new PostMeta_m;
-        $this->postmeta_repository = new Repository(new PostMeta_m);
+        $this->postmeta_repository = new Repository(new PostMeta_m, resolve(\Gdevilbat\SpardaCMS\Modules\Role\Repositories\Contract\AuthenticationRepository::class));
         $this->term_relationship_m = new TermRelationship_m;
-        $this->term_relationship_repository = new Repository(new TermRelationship_m);
+        $this->term_relationship_repository = new Repository(new TermRelationship_m, resolve(\Gdevilbat\SpardaCMS\Modules\Role\Repositories\Contract\AuthenticationRepository::class));
     }
 
     public function index()
@@ -98,7 +98,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
     public function getQuerybuilder($column, $dir)
     {
-        $query = $this->post_repository->buildQueryByAttributes(['post_type' => $this->post_type])
+        $query = $this->post_repository->buildQueryByCreatedUser(['post_type' => $this->post_type])
                                 ->orderBy($column, $dir);
 
         return $query;
