@@ -30,11 +30,11 @@ use Carbon\Carbon;
  */
 abstract class AbstractPost extends CoreController implements InterfacePost
 {
-    public function __construct()
+    public function __construct(\Gdevilbat\SpardaCMS\Modules\Post\Repositories\PostRepository $post_repository)
     {
         parent::__construct();
         $this->post_m = new Post_m;
-        $this->post_repository = new Repository(new Post_m);
+        $this->post_repository = $post_repository;
         $this->terms_m = new Terms_m;
         $this->terms_repository = new Repository(new Terms_m);
         $this->term_taxonomy_m = new TermTaxonomy_m;

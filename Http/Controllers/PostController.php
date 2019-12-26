@@ -13,9 +13,9 @@ class PostController extends AbstractPost
      * Display a listing of the resource.
      * @return Response
      */
-    public function __construct()
+    public function __construct(\Gdevilbat\SpardaCMS\Modules\Post\Repositories\PostRepository $post_repository)
     {
-        parent::__construct();
+        parent::__construct($post_repository);
 
         $this->module = 'post';
         $this->post_type = 'post';
