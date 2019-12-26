@@ -40,7 +40,7 @@ class PostServiceProvider extends ServiceProvider
     {
         $this->app->register(RouteServiceProvider::class);
         $this->app->bind(\Gdevilbat\SpardaCMS\Modules\Post\Repositories\PostRepository::class, function($app){
-            return new \Gdevilbat\SpardaCMS\Modules\Post\Repositories\PostRepository(new \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post);
+            return new \Gdevilbat\SpardaCMS\Modules\Post\Repositories\PostRepository(new \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post, $app->make(\Gdevilbat\SpardaCMS\Modules\Role\Repositories\Contract\AuthenticationRepository::class));
         });
     }
 

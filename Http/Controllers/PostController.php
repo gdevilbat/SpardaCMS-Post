@@ -19,6 +19,7 @@ class PostController extends AbstractPost
 
         $this->module = 'post';
         $this->post_type = 'post';
+        $this->post_repository->setModule($this->module);
     }
 
     /**
