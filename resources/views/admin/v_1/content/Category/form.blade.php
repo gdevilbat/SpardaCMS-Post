@@ -63,32 +63,32 @@
                             </div>
                         @endif
                     </div>
-                    <div class="form-group m-form__group d-flex">
-                        <div class="col-md-4 d-flex justify-content-end py-3">
+                    <div class="form-group m-form__group d-md-flex">
+                        <div class="col-md-4 d-md-flex justify-content-end py-3">
                             <label for="exampleInputEmail1">Category Name<span class="ml-1 m--font-danger" aria-required="true">*</span></label>
                         </div>
                         <div class="col-md-8">
                             <input type="text" class="form-control m-input slugify" data-target="slug" name="term[name]" placeholder="Terms Name" value="{{old('term.name') ? old('term.name') : (!empty($taxonomy) ? $taxonomy->term->name : '')}}">
                         </div>
                     </div>
-                    <div class="form-group m-form__group d-flex">
-                        <div class="col-md-4 d-flex justify-content-end py-3">
+                    <div class="form-group m-form__group d-md-flex">
+                        <div class="col-md-4 d-md-flex justify-content-end py-3">
                             <label for="exampleInputEmail1">Category Slug<span class="ml-1 m--font-danger" aria-required="true">*</span></label>
                         </div>
                         <div class="col-md-8">
                             <input type="text" class="form-control m-input" name="term[slug]" id="slug" placeholder="Terms Slug" value="{{old('term.slug') ? old('term.slug') : (!empty($taxonomy) ? $taxonomy->term->slug : '')}}">
                         </div>
                     </div>
-                    <div class="form-group m-form__group d-flex">
-                        <div class="col-md-4 d-flex justify-content-end py-3">
+                    <div class="form-group m-form__group d-md-flex">
+                        <div class="col-md-4 d-md-flex justify-content-end py-3">
                             <label for="exampleInputEmail1">Category Description</label>
                         </div>
                         <div class="col-md-8">
                             <textarea type="text" class="form-control m-input autosize" name="taxonomy[description]" placeholder="Taxonomy Description">{{old('taxonomy.description') ? old('taxonomy.description') : (!empty($taxonomy) ? $taxonomy->description : '')}}</textarea>
                         </div>
                     </div>
-                    <div class="form-group m-form__group d-flex">
-                        <div class="col-md-4 d-flex justify-content-end py-3">
+                    <div class="form-group m-form__group d-md-flex">
+                        <div class="col-md-4 d-md-flex justify-content-end py-3">
                             <label for="exampleInputEmail1">Category Parent</label>
                         </div>
                         <div class="col-md-8">
