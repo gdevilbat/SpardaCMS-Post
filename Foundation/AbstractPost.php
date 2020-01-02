@@ -22,6 +22,7 @@ use Auth;
 use Storage;
 use Validator;
 use Carbon\Carbon;
+use StorageService;
 
 /**
  * Class EloquentCoreRepository
@@ -298,40 +299,79 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                 if($request->has('meta.cover_image'))
                 {
                     $cover_image = $request->input('meta.cover_image');
+
                     $postmeta = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => 'cover_image'])->first();
 
-                    $path = null;
+                    $path = json_decode(json_encode([]));
 
                     if($request->hasFile('meta.cover_image.file'))
                     {
-                        $path = $request->file('meta.cover_image.file')->storeAs(Carbon::now()->format('Y/m'), $request->file('meta.cover_image.file')->getClientOriginalName());
+                        $path = StorageService::putImageAs(Carbon::now()->format('Y/m'), $request->file('meta.cover_image.file'), $request->file('meta.cover_image.file')->getClientOriginalName(), true);
                     }
 
                     if(empty($postmeta))
                     {
                         $postmeta = new $this->postmeta_m;
                     }
+
+                    $tmp = $postmeta->meta_value['file'];
+
+                    if(!empty($path->file) && $tmp != $path->file)
+                    {
+                        Storage::delete($tmp);
+                        $file = $path->file;
+                    }
                     else
                     {
-                        $tmp = $postmeta->meta_value['file'];
-                        
-                        if($tmp != $path && !empty($path))
-                        {
-                            Storage::delete($tmp);
-                        }
-                        else
-                        {
-                            $path = $tmp;
-                        }
+                        $file = $tmp;
+                    }
 
+                    $tmp = $postmeta->meta_value['small'];
+                    
+                    if(!empty($path->small) && $tmp != $path->small)
+                    {
+                        Storage::delete($tmp);
+                        $small = $path->small;
+                    }
+                    else
+                    {
+                        $small = $tmp;
+                    }
+
+                    $tmp = $postmeta->meta_value['thumb'];
+                    
+                    if(!empty($path->thumb) && $tmp != $path->thumb)
+                    {
+                        Storage::delete($tmp);
+                        $thumb = $path->thumb;
+                    }
+                    else
+                    {
+                        $thumb = $tmp;
+                    }
+
+                    $tmp = $postmeta->meta_value['medium'];
+                    
+                    if(!empty($path->medium) && $tmp != $path->medium)
+                    {
+                        Storage::delete($tmp);
+                        $medium = $path->medium;
+                    }
+                    else
+                    {
+                        $medium = $tmp;
                     }
 
 
-                    $cover_image['file'] = $path;
+                    $cover_image['file'] = $file;
+                    $cover_image['small'] = $small;
+                    $cover_image['thumb'] = $thumb;
+                    $cover_image['medium'] = $medium;
 
                     $postmeta->post_id = $post->getKey();
                     $postmeta->meta_key = 'cover_image';
                     $postmeta->meta_value = $cover_image;
+
                     $postmeta->save();
                 }
             
