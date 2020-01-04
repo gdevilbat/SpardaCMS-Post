@@ -557,7 +557,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
             'meta.cover_image.file' => [
                     'max:500',
                      function ($attribute, $value, $fail) use ($request) {
-                        if (Storage::exists('E-Paper/'.$request->file('meta.cover_image.file')->getClientOriginalName())) {
+                        if (Storage::exists(Carbon::now()->format('Y/m').'/'.$request->file('meta.cover_image.file')->getClientOriginalName())) {
                             $fail($attribute.' Is Exist. Please Use Another Filename.');
                         }
                     },
