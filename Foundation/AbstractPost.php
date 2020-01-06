@@ -555,7 +555,6 @@ abstract class AbstractPost extends CoreController implements InterfacePost
             'post.post_title' => 'required',
             'post.post_slug' => 'required|max:191',
             'meta.cover_image.file' => [
-                    'max:500',
                      function ($attribute, $value, $fail) use ($request) {
                         if (Storage::exists(Carbon::now()->format('Y/m').'/'.$request->file('meta.cover_image.file')->getClientOriginalName())) {
                             $fail($attribute.' Is Exist. Please Use Another Filename.');
@@ -563,6 +562,15 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                     },
                 ]
         ]);
+
+        if(!StorageService::isOriginalImageCompress())
+        {
+            $validator->addRules([
+                'meta.cover_image.file' => [
+                    'max:500'
+                ]
+            ]);
+        }
 
         if(!empty($request->input('taxonomy.tag')))
         {
