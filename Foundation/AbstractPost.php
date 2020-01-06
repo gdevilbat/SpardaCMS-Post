@@ -306,7 +306,10 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
                     if($request->hasFile('meta.cover_image.file'))
                     {
-                        $path = StorageService::putImageAs(Carbon::now()->format('Y/m'), $request->file('meta.cover_image.file'), Str::slug(md5(microtime()).'-'.$request->file('meta.cover_image.file')->getClientOriginalName(), '-'), true);
+                        $file = $request->file('meta.cover_image.file')->getClientOriginalName();
+                        $filename = pathinfo($file, PATHINFO_FILENAME);
+                        $extension = pathinfo($file, PATHINFO_EXTENSION);
+                        $path = StorageService::putImageAs(Carbon::now()->format('Y/m'), $request->file('meta.cover_image.file'), Str::slug(md5(microtime()).'-'.$filename, '-').'.'.$extension, true);
                     }
 
                     if(empty($postmeta))
