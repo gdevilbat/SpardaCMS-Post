@@ -306,7 +306,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
                     if($request->hasFile('meta.cover_image.file'))
                     {
-                        $path = StorageService::putImageAs(Carbon::now()->format('Y/m'), $request->file('meta.cover_image.file'), $request->file('meta.cover_image.file')->getClientOriginalName(), true);
+                        $path = StorageService::putImageAs(Carbon::now()->format('Y/m'), $request->file('meta.cover_image.file'), Str::slug(md5(microtime()).'-'.$request->file('meta.cover_image.file')->getClientOriginalName(), '-'), true);
                     }
 
                     if(empty($postmeta))
@@ -554,13 +554,6 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $validator = Validator::make($request->all(), [
             'post.post_title' => 'required',
             'post.post_slug' => 'required|max:191',
-            'meta.cover_image.file' => [
-                     function ($attribute, $value, $fail) use ($request) {
-                        if (Storage::exists(Carbon::now()->format('Y/m').'/'.$request->file('meta.cover_image.file')->getClientOriginalName())) {
-                            $fail($attribute.' Is Exist. Please Use Another Filename.');
-                        }
-                    },
-                ]
         ]);
 
         if(!StorageService::isOriginalImageCompress())
