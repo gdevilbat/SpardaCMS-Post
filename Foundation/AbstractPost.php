@@ -540,6 +540,9 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $query = $this->post_m->findOrFail(decrypt($request->input(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())));
         $this->authorize('delete-'.$this->getModule(), $query);
 
+        if($query->post_status == 'publish')
+            return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 400,'message' => 'Failed Delete Post, It\'s Has Been Published!'));
+
         try {
             
             if($query->delete())
@@ -548,7 +551,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
             }
             
         } catch (\Exception $e) {
-            return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Failed Delete Post, It\'s Has Been Used!'));
+            return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 400,'message' => 'Failed Delete Post, It\'s Has Been Used!'));
         }
     }
 
