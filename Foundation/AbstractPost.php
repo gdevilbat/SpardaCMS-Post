@@ -537,7 +537,12 @@ abstract class AbstractPost extends CoreController implements InterfacePost
      */
     public function destroy(Request $request)
     {
-        $query = $this->post_m->findOrFail(decrypt($request->input(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())));
+        try {
+                $query = $this->post_m->findOrFail(decrypt($request->input(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 400,'message' => 'Token Invalid, Try Again'));
+        }
+
         $this->authorize('delete-'.$this->getModule(), $query);
 
         if($query->post_status == 'publish')
