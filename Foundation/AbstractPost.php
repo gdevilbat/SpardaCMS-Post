@@ -317,7 +317,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                         $postmeta = new $this->postmeta_m;
                     }
 
-                    $tmp = $postmeta->meta_value['file'];
+                    $tmp = (!empty($postmeta->meta_value) && array_key_exists('file', $postmeta->meta_value)) ? $postmeta->meta_value['file'] : '';
 
                     if(!empty($path->file) && $tmp != $path->file)
                     {
@@ -329,7 +329,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                         $file = $tmp;
                     }
 
-                    $tmp = $postmeta->meta_value['small'];
+                    $tmp = (!empty($postmeta->meta_value) && array_key_exists('small', $postmeta->meta_value)) ? $postmeta->meta_value['small'] : '';
                     
                     if(!empty($path->small) && $tmp != $path->small)
                     {
@@ -341,7 +341,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                         $small = $tmp;
                     }
 
-                    $tmp = $postmeta->meta_value['thumb'];
+                    $tmp = (!empty($postmeta->meta_value) && array_key_exists('thumb', $postmeta->meta_value)) ? $postmeta->meta_value['thumb'] : '';
                     
                     if(!empty($path->thumb) && $tmp != $path->thumb)
                     {
@@ -353,7 +353,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                         $thumb = $tmp;
                     }
 
-                    $tmp = $postmeta->meta_value['medium'];
+                    $tmp = (!empty($postmeta->meta_value) && array_key_exists('medium', $postmeta->meta_value)) ? $postmeta->meta_value['medium'] : '';
                     
                     if(!empty($path->medium) && $tmp != $path->medium)
                     {
