@@ -13,6 +13,6 @@ return [
     'post_author' => 'Author|Authors',
     'created_at' => 'Created at',
     'updated_at' => 'Updated at',
-    'action' => 'Actions',
+    'action' => 'Action',
 
 ];
