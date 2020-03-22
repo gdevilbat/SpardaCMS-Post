@@ -15,6 +15,8 @@
   }
   </style>
 </head>
+{{Html::style(module_asset_url('core:assets/metronic-v5/global/plugins/select2/css/select2.min.css'))}}
+{{Html::style(module_asset_url('core:assets/metronic-v5/global/plugins/select2/css/select2-bootstrap.min.css'))}}
 <body>
 
 <div class="container" style="margin-top:30px">
@@ -23,9 +25,9 @@
       <form action="#">
           <div class="form-group">
             <label for="email">Select Post</label>
-            <select name="post" class="form-control" required>
+            <select name="post" class="form-control" id="post-list" required>
+                <option selected disabled>Select Linked Post</option>
                 @foreach ( $posts as $post)
-                    <option selected disabled>Select Linked Post</option>
                     <option data-id="{{$post->getKey()}}" data-url="{{url($post->created_at->format('Y').'/'.$post->created_at->format('m').'/'.$post->post_slug.'.html')}}">{{$post->post_title}}</option>
                 @endforeach
             </select>
@@ -35,8 +37,11 @@
     </div>
   </div>
 </div>
-
+{{Html::script(module_asset_url('core:assets/metronic-v5/global/plugins/select2/js/select2.min.js'))}}
 <script>
+  $(document).ready(function() {
+    $("#post-list").select2();
+  });
     // Helper function to get parameters from the query string.
     function getUrlParam( paramName ) {
         var reParam = new RegExp( '(?:[\?&]|&)' + paramName + '=([^&]+)', 'i' );

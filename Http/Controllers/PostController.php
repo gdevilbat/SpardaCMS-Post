@@ -44,7 +44,9 @@ class PostController extends AbstractPost
 
     public function browsePostList()
     {
-        $this->data['posts'] = $this->post_repository->getByAttributes(['post_status' => 'publish', 'post_type' => 'post']);
+        $this->data['posts'] = $this->post_repository->buildQueryByAttributes(['post_status' => 'publish', 'post_type' => 'post'], 'created_at', 'DESC')
+                                    ->select([\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), 'post_title', 'created_at'])
+                                    ->get();
 
         return view($this->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->getPostType()).'.browse-post-list', $this->data);
     }
