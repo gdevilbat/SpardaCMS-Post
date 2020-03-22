@@ -41,4 +41,11 @@ class PostController extends AbstractPost
     {
         return 'tag';
     }
+
+    public function browsePostList()
+    {
+        $this->data['posts'] = $this->post_repository->getByAttributes(['post_status' => 'publish', 'post_type' => 'post']);
+
+        return view($this->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->getPostType()).'.browse-post-list', $this->data);
+    }
 }

@@ -30,6 +30,7 @@ Route::group(['prefix' => 'control', 'middleware' => 'core.auth'], function() {
 
 		    Route::group(['prefix' => 'api'], function() {
 			    Route::get('master', 'PostController@serviceMaster')->middleware('can:menu-post')->name('cms.post-data.service-master');
+			    Route::get('browse-post-list', 'PostController@browsePostList')->middleware('can:menu-post');
 		    });
         
 
