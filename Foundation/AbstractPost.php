@@ -567,6 +567,12 @@ abstract class AbstractPost extends CoreController implements InterfacePost
             'post.post_slug' => 'required|max:191',
         ]);
 
+         $validator->addRules([
+            'meta.cover_image.file' => [
+                'mimetypes:image/*'
+            ]
+        ]);
+
         if(!StorageService::isOriginalImageCompress())
         {
             $validator->addRules([
