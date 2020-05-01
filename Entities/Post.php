@@ -83,6 +83,11 @@ class Post extends Model
     	}
     }
 
+    public function getPostURLAttribute()
+    {
+        return url($this->created_at->format('Y').'/'.$this->created_at->format('m').'/'.$this->post_slug.'.html');
+    }
+
     public function getPostStatusBoolAttribute()
     {
         if($this->post_status == 'publish')

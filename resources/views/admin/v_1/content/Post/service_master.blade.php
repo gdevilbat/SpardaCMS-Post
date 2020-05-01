@@ -6,7 +6,7 @@
         <div class="dropdown-menu dropdown-menu-left">
             @if(Module::has('Blog'))
                 <button class="dropdown-item" type="button">
-                    <a class="m-link m-link--state m-link--warning" href="{{action('\Gdevilbat\SpardaCMS\Modules\Blog\Http\Controllers\BlogController@blog', ['year' => $post->created_at->format('Y'), 'month' => $post->created_at->format('m'), 'slug' => $post->post_slug])}}" target="_blank"><i class="fa fa-eye"> Preview</i></a>
+                    <a class="m-link m-link--state m-link--warning" href="{{$post->post_url}}" target="_blank"><i class="fa fa-eye"> Preview</i></a>
                 </button>
             @endif
             @can('update-post', $post)
