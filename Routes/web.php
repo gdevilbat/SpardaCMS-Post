@@ -84,3 +84,7 @@ Route::group(['prefix' => 'control', 'middleware' => 'core.auth'], function() {
 
 	});
 });
+
+Route::group(['prefix' => 'api'], function() {
+    Route::post('get-shortcode-post', 'PostController@getShortCodePost');
+});

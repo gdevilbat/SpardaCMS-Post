@@ -50,4 +50,9 @@ class PostController extends AbstractPost
 
         return view($this->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->getPostType()).'.browse-post-list', $this->data);
     }
+
+    public function getShortCodePost(Request $request)
+    {
+        return response()->json($this->post_m->where(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), $request->input('id'))->firstOrFail()->post_url);
+    }
 }
