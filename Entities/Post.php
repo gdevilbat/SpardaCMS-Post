@@ -85,7 +85,12 @@ class Post extends Model
 
     public function getPostURLAttribute()
     {
-        return url($this->created_at->format('Y').'/'.$this->created_at->format('m').'/'.$this->post_slug.'.html');
+        if($this->post_type == 'post')
+        {
+            return url($this->created_at->format('Y').'/'.$this->created_at->format('m').'/'.$this->post_slug.'.html');
+        }
+
+        return url($this->post_type.'/'.$this->post_slug);
     }
 
     public function getPostStatusBoolAttribute()
