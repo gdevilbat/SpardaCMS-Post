@@ -75,7 +75,7 @@
 
             var element = dialog.getContentElement( 'tab-basic', 'text' );
             if ( element )
-                element.setValue('['+$('select').eq(0).val()+']');
+                element.setValue('Baca Juga: '+$('select').eq(0).val());
             // Return "false" to stop further execution. In such case CKEditor will ignore the second argument ("fileUrl")
             // and the "onSelect" function assigned to the button that called the file manager (if defined).
             // return false;
