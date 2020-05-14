@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'name' => 'Post'
+    'name' => 'Post',
+    'Model' => \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::class
 ];

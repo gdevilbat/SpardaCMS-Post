@@ -40,7 +40,8 @@ class PostServiceProvider extends ServiceProvider
     {
         $this->app->register(RouteServiceProvider::class);
         $this->app->bind(\Gdevilbat\SpardaCMS\Modules\Post\Repositories\PostRepository::class, function($app){
-            return new \Gdevilbat\SpardaCMS\Modules\Post\Repositories\PostRepository(new \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post, $app->make(\Gdevilbat\SpardaCMS\Modules\Role\Repositories\Contract\AuthenticationRepository::class));
+            $model = config('cms-post.Model');
+            return new \Gdevilbat\SpardaCMS\Modules\Post\Repositories\PostRepository(new $model, $app->make(\Gdevilbat\SpardaCMS\Modules\Role\Repositories\Contract\AuthenticationRepository::class));
         });
     }
 
@@ -52,10 +53,10 @@ class PostServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->publishes([
-            __DIR__.'/../Config/config.php' => config_path('post.php'),
+            __DIR__.'/../Config/config.php' => config_path('cms-post.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php', 'post'
+            __DIR__.'/../Config/config.php', 'cms-post'
         );
     }
 
