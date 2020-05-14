@@ -10,22 +10,22 @@ class Post extends Model
     protected $table = 'posts';
     protected $primaryKey = 'id_posts';
 
-    public function postMeta()
+    final function postMeta()
     {
     	return $this->hasMany('Gdevilbat\SpardaCMS\Modules\Post\Entities\PostMeta', 'post_id');
     }
 
-    public function taxonomies()
+    final function taxonomies()
     {
     	return $this->belongsToMany('\Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermTaxonomy', 'term_relationships', 'object_id','term_taxonomy_id');
     }
 
-    public function author()
+    final function author()
     {
         return $this->belongsTo('\Gdevilbat\SpardaCMS\Modules\Core\Entities\User', 'created_by');
     }
 
-    public function getGalleriesAttribute()
+    final function getGalleriesAttribute()
     {
         if(!empty($this->postMeta->where('meta_key', 'gallery')->first()))
             return json_decode(json_encode($this->postMeta->where('meta_key', 'gallery')->first()->meta_value));
@@ -39,7 +39,7 @@ class Post extends Model
      * @param  string  $value
      * @return void
      */
-    public function setPostStatusAttribute($value)
+    final function setPostStatusAttribute($value)
     {
         if(!empty($value))
         {
@@ -57,7 +57,7 @@ class Post extends Model
      * @param  string  $value
      * @return void
      */
-    public function setCommentStatusAttribute($value)
+    final function setCommentStatusAttribute($value)
     {
         if(!empty($value))
         {
@@ -75,7 +75,7 @@ class Post extends Model
      * @param  string  $value
      * @return void
      */
-    public function setPostExcerptAttribute($value)
+    final function setPostExcerptAttribute($value)
     {
     	if(!empty($this->post_content))
     	{
@@ -83,7 +83,7 @@ class Post extends Model
     	}
     }
 
-    public function getPostURLAttribute()
+    final function getPostURLAttribute()
     {
         if($this->post_type == 'post')
         {
@@ -93,7 +93,7 @@ class Post extends Model
         return url($this->post_type.'/'.$this->post_slug);
     }
 
-    public function getPostStatusBoolAttribute()
+    final function getPostStatusBoolAttribute()
     {
         if($this->post_status == 'publish')
             return true;
@@ -101,7 +101,7 @@ class Post extends Model
         return false;
     }
 
-    public function scopeFilterTags($query, \Illuminate\Http\Request $request)
+    final function scopeFilterTags($query, \Illuminate\Http\Request $request)
     {
         if(count($request->input()) > 0)
         {
@@ -121,12 +121,12 @@ class Post extends Model
         return $query;
     }
 
-    public static function getTableName()
+    final static function getTableName()
     {
         return with(new Static)->getTable();
     }
 
-    public static function getPrimaryKey()
+    final static function getPrimaryKey()
     {
         return with(new Static)->getKeyName();
     }
