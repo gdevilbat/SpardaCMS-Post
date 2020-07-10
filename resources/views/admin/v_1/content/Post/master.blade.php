@@ -63,7 +63,7 @@
                     @endif
                 </div>
 
-                @can('create-post')
+                @if(Auth::user()->can('create-post'))
                     <div class="row mb-4">
                         <div class="col-md-5">
                             <a href="{{route('cms.post-data.create')}}" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air">
@@ -74,7 +74,18 @@
                             </a>
                         </div>
                     </div>
-                @endcan
+                @else
+                    <div class="row mb-4">
+                        <div class="col-md-5">
+                            <a href="javascript:void(0)" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air"  data-toggle="m-popover" title="" data-content="You're not Allowed To Take This Action. Pleas Ask Admin !!!" data-original-title="Forbidden Action">
+                                <span>
+                                    <i class="la la-plus"></i>
+                                    <span>Add New {{trans_choice('post::messages.post', 1)}}</span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                @endif
 
                 <!--begin: Datatable -->
                 <table class="table table-striped display responsive nowrap data-table-ajax" id="data-post" data-ajax="{{route('cms.post-data.service-master')}}" width="100%">
