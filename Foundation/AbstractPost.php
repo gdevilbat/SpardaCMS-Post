@@ -577,7 +577,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         {
             $validator->addRules([
                 'meta.cover_image.file' => [
-                    'max:500'
+                    'max:'.(string)config('storage-service.thumbnail.resolution.original.max_size')
                 ]
             ]);
         }
