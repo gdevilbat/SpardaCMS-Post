@@ -63,32 +63,41 @@
                     @endif
                 </div>
 
-                @if(Auth::user()->can('create-post'))
-                    <div class="row mb-4">
-                        <div class="col-md-5">
-                            <a href="{{route('cms.post-data.create')}}" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air">
-                                <span>
-                                    <i class="la la-plus"></i>
-                                    <span>Add New {{trans_choice('post::messages.post', 1)}}</span>
-                                </span>
-                            </a>
+                <div class="row mb-4">
+                    @if(Auth::user()->can('create-post'))
+                            <div class="col-md-5">
+                                <a href="{{route('cms.post-data.create')}}" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air">
+                                    <span>
+                                        <i class="la la-plus"></i>
+                                        <span>Add New {{trans_choice('post::messages.post', 1)}}</span>
+                                    </span>
+                                </a>
+                            </div>
+                    @else
+                            <div class="col-md-5">
+                                <a href="javascript:void(0)" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air"  data-toggle="m-popover" title="" data-content="You're not Allowed To Take This Action. Pleas Ask Admin !!!" data-original-title="Forbidden Action">
+                                    <span>
+                                        <i class="la la-ban"></i>
+                                        <span>Add New {{trans_choice('post::messages.post', 1)}}</span>
+                                    </span>
+                                </a>
+                            </div>
+                    @endif
+
+                        <div class="col row">
+                            <div class="col-12 text-right">
+                                <a href="javascript:void(0)" id="reload-datatable" class="btn btn-info m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air">
+                                    <span>
+                                        <i class="la la-refresh"></i>
+                                        <span>Reload</span>
+                                    </span>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                @else
-                    <div class="row mb-4">
-                        <div class="col-md-5">
-                            <a href="javascript:void(0)" class="btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air"  data-toggle="m-popover" title="" data-content="You're not Allowed To Take This Action. Pleas Ask Admin !!!" data-original-title="Forbidden Action">
-                                <span>
-                                    <i class="la la-ban"></i>
-                                    <span>Add New {{trans_choice('post::messages.post', 1)}}</span>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                @endif
+                </div>
 
                 <!--begin: Datatable -->
-                <table class="table table-striped display responsive nowrap data-table-ajax" id="data-post" data-ajax="{{route('cms.post-data.service-master')}}" width="100%">
+                <table class="table table-striped display responsive nowrap data-table-ajax" id="data_post" data-ajax="{{route('cms.post-data.service-master')}}" width="100%">
                     <thead>
                         <tr>
                             <th data-priority="1">ID</th>
@@ -118,4 +127,12 @@
 </div>
 {{-- End of Row --}}
 
+@endsection
+
+@section('page_script_js')
+    <script type="text/javascript">
+        $("#reload-datatable").click(function(event) {
+            table_data_post.ajax.reload( null, false );
+        });
+    </script>
 @endsection
