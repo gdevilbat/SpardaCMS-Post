@@ -269,9 +269,11 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
                 $meta = [];
 
-                if($request->has('meta'))
+                $request_meta = $request->except('post', 'taxonomy','meta.cover_image', '_token', '_method', 'password_confirmation', 'role_id', \Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey());
+
+                if(array_key_exists('meta', $request_meta))
                 {
-                    $meta = $request->input('meta');
+                    $meta = $request_meta['meta'];
                 }
 
 
