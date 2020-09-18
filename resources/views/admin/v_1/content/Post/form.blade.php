@@ -93,7 +93,7 @@
                                 </div>
                                 <div class="form-group m-form__group d-md-flex px-0 flex-wrap">
                                     <div class="col-md-3 d-md-flex justify-content-end py-3">
-                                        <label for="exampleInputEmail1">{{trans_choice('post::messages.post_category', 1)}}</label>
+                                        <label for="exampleInputEmail1">{{trans_choice('post::messages.post_category', 1)}}<span class="ml-1 m--font-danger" aria-required="true">*</span></label>
                                     </div>
                                     <div class="col">
                                         <select class="form-control m-input select2" name="taxonomy[category][]">
