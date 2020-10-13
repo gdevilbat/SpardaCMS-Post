@@ -22,6 +22,17 @@ class PostController extends AbstractPost
         $this->post_repository->setModule($this->getModule());
     }
 
+    public function validatePost(Request $request)
+    {
+        $validator = parent::validatePost($request);
+
+        $validator->addRules([
+                'taxonomy.category' => 'required',
+        ]);
+
+        return $validator;
+    }
+
     /**
      * Show the specified resource.
      * @param int $id

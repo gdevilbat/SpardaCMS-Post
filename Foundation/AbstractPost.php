@@ -565,7 +565,6 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $validator = Validator::make($request->all(), [
             'post.post_title' => 'required',
             'post.post_slug' => 'required|max:191',
-            'taxonomy.category' => 'required'
         ]);
 
          $validator->addRules([

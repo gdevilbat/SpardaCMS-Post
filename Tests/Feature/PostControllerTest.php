@@ -99,6 +99,7 @@ class PostControllerTest extends TestCase
                         ->from(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@create').'?code='.encrypt($post->getKey()))
                         ->post(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@store'), [
                             'post' => ['post_title' => $post->post_title, 'post_slug' => $post->post_slug, 'post_content' => $post->post_content, 'post_parent' => $post->getKey()],
+                            'taxonomy' => ['category' => [$post->taxonomies->first()->getKey()]],
                             $post->getKeyName() => encrypt($post->getKey()),
                             '_method' => 'PUT'
                         ])
