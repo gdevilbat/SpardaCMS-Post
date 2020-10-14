@@ -71,7 +71,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         if($searchValue)
         {
             $filtered->where(function($query) use ($searchValue){
-                        $query->where(DB::raw("CONCAT(post_title,'-',post_slug,'-',post_status,'-',".$this->post_m::getTableName().".created_at)"), 'like', '%'.$searchValue.'%')
+                        $query->where(DB::raw("CONCAT(post_title,'-',post_slug,'-',post_status,'-',".$this->post_m::getTableWithPrefix().".created_at)"), 'like', '%'.$searchValue.'%')
                                 ->orWhereHas('taxonomies.term', function($query) use ($searchValue){
                                     $query->where(DB::raw("CONCAT(name,'-',slug)"), 'like', '%'.$searchValue.'%');
                                 })

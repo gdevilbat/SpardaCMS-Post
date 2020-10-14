@@ -126,6 +126,11 @@ class Post extends Model
         return with(new Static)->getTable();
     }
 
+    final static function getTableWithPrefix()
+    {
+        return with(new Static)->getConnection()->getTablePrefix().with(new Static)->getTable();
+    }
+
     final static function getPrimaryKey()
     {
         return with(new Static)->getKeyName();
