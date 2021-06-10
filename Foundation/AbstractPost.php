@@ -60,8 +60,11 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $dir = !empty($request->input('order.0.dir')) ? $request->input('order.0.dir') : 'DESC' ;
         $searchValue = $request->input('search')['value'];
 
-        config()->set('database.connections.mysql.strict', false);
-        \DB::reconnect();
+        if(!\App::environment('testing'))
+        {
+            config()->set('database.connections.mysql.strict', false);
+            \DB::reconnect();
+        }
 
         $query = $this->getQuerybuilder($column, $dir);
 
@@ -89,8 +92,11 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         $this->data['dir'] = $dir;
         $this->data['posts'] = $this->getQueryleftJoinBuilder($filtered)->offset($request->input('start'))->limit($length)->get();
 
-        config()->set('database.connections.mysql.strict', true);
-        \DB::reconnect();
+        if(!\App::environment('testing'))
+        {
+            config()->set('database.connections.mysql.strict', true);
+            \DB::reconnect();
+        }
 
         $table =  $this->parsingDataTable($this->data['posts']);
 
