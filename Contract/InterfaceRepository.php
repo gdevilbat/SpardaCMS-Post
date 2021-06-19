@@ -18,6 +18,14 @@ interface InterfaceRepository
     public function save(Request $request, $callback = null);
 
     /**
+     * [saveImage description]
+     * @param  \Gdevilbat\SpardaCMS\Modules\Post\Entities $post        [description]
+     * @param  array                                      $cover_image [description]
+     * @return [type]                                                  [description]
+     */
+    public function saveImage(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post $post, array $cover_image);
+
+    /**
      * [validatePost description]
      * @param  Request $request [description]
      * @return [type]           [description]

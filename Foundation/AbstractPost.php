@@ -38,6 +38,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
     public function index()
     {
+        $this->data['categories'] = $this->post_repository->term_taxonomy_m->with('term')->where(['taxonomy' => $this->post_repository->getCategory()])->get();
         return view($this->post_repository->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->post_repository->getPostType()).'.master', $this->data);
     }
 

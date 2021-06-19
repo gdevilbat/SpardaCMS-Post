@@ -238,11 +238,7 @@ abstract class AbstractRepository extends AbstractRepository_m implements Interf
                     $cover_image['thumb'] = $thumb;
                     $cover_image['medium'] = $medium;
 
-                    $postmeta[Post_m::FOREIGN_KEY] = $post->getKey();
-                    $postmeta->meta_key = 'cover_image';
-                    $postmeta->meta_value = $cover_image;
-
-                    $postmeta->save();
+                    $this->saveImage($post, $cover_image);
                 }
             
             /*=====  End of Meta Data   ======*/
@@ -372,6 +368,16 @@ abstract class AbstractRepository extends AbstractRepository_m implements Interf
         	];
         }
 	}
+
+    public function saveImage(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post $post, array $cover_image)
+    {
+        PostMeta_m::unguard();
+        PostMeta_m::updateOrCreate(
+            ['meta_key' => 'cover_image', Post_m::FOREIGN_KEY => $post->getKey()],
+            ['meta_value' => $cover_image]
+        );
+        PostMeta_m::reguard();
+    }
 
     public function setPostType($post_type)
     {
