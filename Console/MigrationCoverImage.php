@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
 use Gdevilbat\SpardaCMS\Modules\Post\Entities\PostMeta;
+use Gdevilbat\SpardaCMS\Modules\Post\Entities\Post;
 
 class MigrationCoverImage extends Command
 {
@@ -42,9 +43,9 @@ class MigrationCoverImage extends Command
     public function handle()
     {
 
-        $existing_cover_image =  PostMeta::where('meta_key', 'cover_image')->pluck('post_id');
+        $existing_cover_image =  PostMeta::where('meta_key', 'cover_image')->pluck(Post::FOREIGN_KEY);
 
-        $count_progress  = PostMeta::where('meta_key', 'feature_image')->whereNotIn('post_id', $existing_cover_image)->count();
+        $count_progress  = PostMeta::where('meta_key', 'feature_image')->whereNotIn(Post::FOREIGN_KEY, $existing_cover_image)->count();
 
         $feature_images = PostMeta::where('meta_key', 'feature_image')->get();
 
@@ -55,12 +56,12 @@ class MigrationCoverImage extends Command
 
         foreach ($feature_images as $key => $feature_image) 
         {
-            $cover_image = PostMeta::where('meta_key', 'cover_image')->where('post_id', $feature_image->post_id)->first();
+            $cover_image = PostMeta::where('meta_key', 'cover_image')->where(Post::FOREIGN_KEY, $feature_image[Post::FOREIGN_KEY])->first();
 
             if(empty($cover_image))
             {
                 $new_cover_image = new PostMeta;
-                $new_cover_image->post_id = $feature_image->post_id;
+                $new_cover_image[Post::FOREIGN_KEY] = $feature_image[Post::FOREIGN_KEY];
                 $new_cover_image->meta_key = 'cover_image';
                 $new_cover_image->meta_value = ['file' => $feature_image->meta_value, 'caption' => ''];
                 $new_cover_image->save();

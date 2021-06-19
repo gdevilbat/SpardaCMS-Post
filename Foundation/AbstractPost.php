@@ -285,13 +285,13 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
                 foreach ($meta as $key => $value) 
                 {
-                    $postmeta = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => $key])->first();
+                    $postmeta = $this->postmeta_m->where([Post_m::FOREIGN_KEY => $post->getKey(), 'meta_key' => $key])->first();
                     if(empty($postmeta))
                         $postmeta = new $this->postmeta_m;
 
                     if(!empty($value))
                     {
-                        $postmeta->post_id = $post->getKey();
+                        $postmeta[Post_m::FOREIGN_KEY] = $post->getKey();
                         $postmeta->meta_key = $key;
                         $postmeta->meta_value = $value;
                         $postmeta->save();
@@ -306,7 +306,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                 {
                     $cover_image = $request->input('meta.cover_image');
 
-                    $postmeta = $this->postmeta_m->where(['post_id' => $post->getKey(), 'meta_key' => 'cover_image'])->first();
+                    $postmeta = $this->postmeta_m->where([Post_m::FOREIGN_KEY => $post->getKey(), 'meta_key' => 'cover_image'])->first();
 
                     $path = json_decode(json_encode([]));
 
@@ -377,7 +377,7 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                     $cover_image['thumb'] = $thumb;
                     $cover_image['medium'] = $medium;
 
-                    $postmeta->post_id = $post->getKey();
+                    $postmeta[Post_m::FOREIGN_KEY] = $post->getKey();
                     $postmeta->meta_key = 'cover_image';
                     $postmeta->meta_value = $cover_image;
 

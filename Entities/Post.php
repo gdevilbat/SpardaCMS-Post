@@ -10,9 +10,11 @@ class Post extends Model
     protected $table = 'posts';
     protected $primaryKey = 'id_posts';
 
+    CONST FOREIGN_KEY = 'post_id';
+
     final function postMeta()
     {
-    	return $this->hasMany('Gdevilbat\SpardaCMS\Modules\Post\Entities\PostMeta', 'post_id');
+    	return $this->hasMany('Gdevilbat\SpardaCMS\Modules\Post\Entities\PostMeta', SELF::FOREIGN_KEY);
     }
 
     final function taxonomies()
