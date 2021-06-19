@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use Gdevilbat\SpardaCMS\Modules\Post\Foundation\AbstractPost;
+use Gdevilbat\SpardaCMS\Modules\Post\Entities\Post;
 
 class PostController extends AbstractPost
 {
@@ -16,21 +17,7 @@ class PostController extends AbstractPost
     public function __construct(\Gdevilbat\SpardaCMS\Modules\Post\Repositories\PostRepository $post_repository)
     {
         parent::__construct($post_repository);
-
-        $this->setModule('post');
-        $this->setPostType('post');
-        $this->post_repository->setModule($this->getModule());
-    }
-
-    public function validatePost(Request $request)
-    {
-        $validator = parent::validatePost($request);
-
-        $validator->addRules([
-                'taxonomy.category' => 'required',
-        ]);
-
-        return $validator;
+        $this->post_m = new Post;
     }
 
     /**
@@ -40,17 +27,7 @@ class PostController extends AbstractPost
      */
     public function show($id)
     {
-        return view($this->getModule().'::show');
-    }
-
-    public function getCategory()
-    {
-        return 'category';
-    }
-
-    public function getTag()
-    {
-        return 'tag';
+        return view($this->post_repository->getModule().'::show');
     }
 
     public function browsePostList()
@@ -59,7 +36,7 @@ class PostController extends AbstractPost
                                     ->select([\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey(), 'post_title', 'created_at'])
                                     ->get();
 
-        return view($this->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->getPostType()).'.browse-post-list', $this->data);
+        return view($this->post_repository->getModule().'::admin.'.$this->data['theme_cms']->value.'.content.'.ucfirst($this->post_repository->getPostType()).'.browse-post-list', $this->data);
     }
 
     public function getShortCodePost(Request $request)

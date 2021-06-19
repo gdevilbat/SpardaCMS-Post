@@ -2,11 +2,7 @@
 
 namespace Gdevilbat\SpardaCMS\Modules\Post\Repositories;
 
-use Gdevilbat\SpardaCMS\Modules\Core\Repositories;
-use Gdevilbat\SpardaCMS\Modules\Core\Repositories\AbstractRepository;
-
-use Auth;
-use Module;
+use Illuminate\Http\Request;
 
 /**
  * Class EloquentCoreRepository
@@ -17,7 +13,29 @@ class PostRepository extends AbstractRepository
 {
 	public function __construct(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post $model, \Gdevilbat\SpardaCMS\Modules\Role\Repositories\Contract\AuthenticationRepository $acl)
     {
-        $this->model = $model;
-        $this->acl = $acl;
+        parent::__construct($model, $acl);
+        $this->setModule('post');
+        $this->setPostType('post');
+    }
+
+    public function validatePost(Request $request)
+    {
+        $validator = parent::validatePost($request);
+
+        $validator->addRules([
+                'taxonomy.category' => 'required',
+        ]);
+
+        return $validator;
+    }
+
+    public function getCategory()
+    {
+        return 'category';
+    }
+
+    public function getTag()
+    {
+        return 'tag';
     }
 }

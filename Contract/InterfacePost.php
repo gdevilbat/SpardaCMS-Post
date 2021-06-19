@@ -28,19 +28,11 @@ interface InterfacePost
     public function create();
 
     /**
-     * Update a resource
-     * @param  $model
-     * @param  array $data
-     * @return $model
-     */
-    public function validatePost(Request $request);
-
-    /**
      * Paginate the model to $perPage items per page
      * @param  int $perPage
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function store(Request $request, $callback = null);
+    public function store(Request $request);
 
     /**
      * Create a resource
@@ -48,38 +40,6 @@ interface InterfacePost
      * @return $model
      */
     public function destroy(Request $request);
-
-    /**
-     * Update a resource
-     * @param  $model
-     * @param  array $data
-     * @return $model
-     */
-    public function setModule($module);
-
-    /**
-     * Update a resource
-     * @param  $model
-     * @param  array $data
-     * @return $model
-     */
-    public function getModule();
-
-    /**
-     * Update a resource
-     * @param  $model
-     * @param  array $data
-     * @return $model
-     */
-    public function setPostType($post_type);
-
-    /**
-     * Update a resource
-     * @param  $model
-     * @param  array $data
-     * @return $model
-     */
-    public function getPostType();
 
     /**
      * Update a resource
