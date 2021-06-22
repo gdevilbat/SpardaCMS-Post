@@ -35,6 +35,14 @@ class Post extends Model
         return [];
     }
 
+    final function getMetaAttribute()
+    {
+        $meta_repo = resolve(\Gdevilbat\SpardaCMS\Modules\Post\Repositories\PostMetaRepository::class);
+        $meta_repo->post = $this;
+
+        return $meta_repo;
+    }
+
     /**
      * Set the Post Status.
      *
