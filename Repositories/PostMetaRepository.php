@@ -37,7 +37,7 @@ class PostMetaRepository extends AbstractRepository
 
         if(!empty($row))
         {
-            return $row->meta_value;
+            return json_decode(json_encode($row->meta_value));
         }
 
         return '';
