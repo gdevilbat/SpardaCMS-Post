@@ -8,6 +8,9 @@ use Gdevilbat\SpardaCMS\Modules\Post\Entities\Post;
 use Gdevilbat\SpardaCMS\Modules\Core\Repositories\AbstractRepository;
 use Validator;
 
+use ArrayObject;
+use stdClass;
+
 /**
  * Class EloquentCoreRepository
  *
@@ -37,7 +40,7 @@ class PostMetaRepository extends AbstractRepository
 
         if(!empty($row))
         {
-            return json_decode(json_encode($row->meta_value));
+            return new SoftObject(json_decode(json_encode($row->meta_value)));
         }
 
         return '';
@@ -49,5 +52,40 @@ class PostMetaRepository extends AbstractRepository
             Post::FOREIGN_KEY => $this->post->getKey(),
             'meta_key' => $meta_key
         ]);
+    }
+}
+
+class SoftObject extends ArrayObject{
+    private $obj;
+
+    public function __construct($data) {
+        if(is_object($data)){
+            $this->obj = $data;
+        }elseif(is_array($data)){
+            // turn it into a multidimensional object
+            $this->obj = json_decode(json_encode($data), false);
+        }
+    }
+
+    public function __get($a) {
+        if(isset($this->obj->$a)) {
+            return $this->obj->$a;
+        }else {
+            // return an empty object in order to prevent errors with chain call
+            $tmp = new stdClass();
+            return new SoftObject($tmp);
+        }
+    }
+
+    public function __set($key, $value) {
+        $this->obj->$key = $value;
+    }
+
+    public function __call($method, $args) {
+        call_user_func_array(Array($this->obj,$method),$args);
+    }
+
+    public function __toString() {
+        return "";
     }
 }
