@@ -40,7 +40,13 @@ class PostMetaRepository extends AbstractRepository
 
         if(!empty($row))
         {
-            return new SoftObject(json_decode(json_encode($row->meta_value)));
+            if(is_array($row->meta_value))
+            {
+                return new SoftObject(json_decode(json_encode($row->meta_value)));
+            }
+
+            return $row->meta_value;
+
         }
 
         return '';
