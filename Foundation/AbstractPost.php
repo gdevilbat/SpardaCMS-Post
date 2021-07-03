@@ -69,6 +69,9 @@ abstract class AbstractPost extends CoreController implements InterfacePost
                                 ->orWhereHas('taxonomies.term', function($query) use ($searchValue){
                                     $query->where(DB::raw("CONCAT(name,'-',slug)"), 'like', '%'.$searchValue.'%');
                                 })
+                                ->orWhereHas('taxonomies.allTaxonomyParents.term', function($query) use ($searchValue){
+                                    $query->where(DB::raw("CONCAT(name,'-',slug)"), 'like', '%'.$searchValue.'%');
+                                })
                                 ->orWhereHas('author', function($query) use ($searchValue){
                                     $query->where(DB::raw("CONCAT(name)"), 'like', '%'.$searchValue.'%');
                                 });
