@@ -95,6 +95,11 @@ class SoftObject extends ArrayObject{
         call_user_func_array(Array($this->obj,$method),$args);
     }
 
+    public function get()
+    {
+        return $this->obj;
+    }
+
     public function __toString() {
         return "";
     }
