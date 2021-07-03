@@ -83,6 +83,10 @@ class SoftObject extends ArrayObject{
         }
     }
 
+    public function __isset($a) {
+        return isset($this->obj->$a);
+    } 
+
     public function __set($key, $value) {
         $this->obj->$key = $value;
     }
