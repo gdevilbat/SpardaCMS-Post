@@ -219,11 +219,11 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         {
             if($request->isMethod('POST'))
             {
-                return redirect(action('\\'.get_called_class().'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add '.ucfirst($this->post_repository->getPostType()).'!'));
+                return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add '.ucfirst($this->post_repository->getPostType()).'!'));
             }
             else
             {
-                return redirect(action('\\'.get_called_class().'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update '.ucfirst($this->post_repository->getPostType()).'!'));
+                return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update '.ucfirst($this->post_repository->getPostType()).'!'));
             }
         }
         else
@@ -262,23 +262,23 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         try {
                 $query = $this->post_m->findOrFail(decrypt($request->input(\Gdevilbat\SpardaCMS\Modules\Post\Entities\Post::getPrimaryKey())));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return redirect(action('\\'.get_called_class.'@index'))->with('global_message', array('status' => 400,'message' => 'Token Invalid, Try Again'));
+            return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 400,'message' => 'Token Invalid, Try Again'));
         }
 
         $this->authorize('delete-'.$this->post_repository->getModule(), $query);
 
         if($query->post_status == 'publish')
-            return redirect(action('\\'.get_called_class.'@index'))->with('global_message', array('status' => 400,'message' => 'Failed Delete Post, It\'s Has Been Published!'));
+            return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 400,'message' => 'Failed Delete Post, It\'s Has Been Published!'));
 
         try {
             
             if($query->delete())
             {
-                return redirect(action('\\'.get_called_class.'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Delete '.ucfirst($this->post_repository->getPostType()).'!'));
+                return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Delete '.ucfirst($this->post_repository->getPostType()).'!'));
             }
             
         } catch (\Exception $e) {
-            return redirect(action('\\'.get_called_class.'@index'))->with('global_message', array('status' => 400,'message' => 'Failed Delete Post, It\'s Has Been Used!'));
+            return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 400,'message' => 'Failed Delete Post, It\'s Has Been Used!'));
         }
     }
 
