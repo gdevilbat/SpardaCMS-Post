@@ -219,11 +219,11 @@ abstract class AbstractPost extends CoreController implements InterfacePost
         {
             if($request->isMethod('POST'))
             {
-                return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add '.ucfirst($this->post_repository->getPostType()).'!'));
+                return redirect(action('\\'.get_called_class().'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Add '.ucfirst($this->post_repository->getPostType()).'!'));
             }
             else
             {
-                return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update '.ucfirst($this->post_repository->getPostType()).'!'));
+                return redirect(action('\\'.get_called_class().'@index'))->with('global_message', array('status' => 200,'message' => 'Successfully Update '.ucfirst($this->post_repository->getPostType()).'!'));
             }
         }
         else
