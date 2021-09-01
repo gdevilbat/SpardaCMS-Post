@@ -56,9 +56,9 @@
                         <div class="fileinput fileinput-new" data-provides="fileinput">
                             <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
                                 @if(!empty($post) && !empty($post->postMeta->where('meta_key', 'cover_image')->first()) && $post->postMeta->where('meta_key', 'cover_image')->first()->meta_value['file'] != null)
-                                    <img src="{{generate_storage_url($post->postMeta->where('meta_key', 'cover_image')->first()->meta_value['file'])}}" alt=""> 
+                                    <img src="{{generate_storage_url($post->postMeta->where('meta_key', 'cover_image')->first()->meta_value['file'])}}" class="img-fluid" alt=""> 
                                 @else
-                                    <img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt=""> 
+                                    <img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" class="img-fluid" alt=""> 
                                 @endif
                             </div>
                             <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
