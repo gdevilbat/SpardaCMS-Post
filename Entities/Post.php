@@ -95,6 +95,16 @@ class Post extends Model
 
     final function getPostURLAttribute()
     {
+        if($this->post_slug == 'homepage')
+        {
+            return url('/');
+        }
+
+        if($this->post_type == 'post')
+        {
+            return url($this->created_at->format('Y').'/'.$this->created_at->format('m').'/'.$this->post_slug.'.html');
+        }
+
         if($this->post_type == 'page')
         {
             return url($this->post_slug);
