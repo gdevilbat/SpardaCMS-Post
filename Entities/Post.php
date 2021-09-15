@@ -87,10 +87,17 @@ class Post extends Model
      */
     final function setPostExcerptAttribute($value)
     {
-    	if(!empty($this->post_content))
-    	{
-            $this->attributes['post_excerpt'] = substr(strip_tags($this->post_content), 0, 50).'[...]';
-    	}
+        if(empty($value))
+        {
+        	if(!empty($this->post_content))
+        	{
+                $this->attributes['post_excerpt'] = substr(strip_tags($this->post_content), 0, 50).'[...]';
+        	}
+        }
+        else
+        {
+            $this->attributes['post_excerpt'] = $value;
+        }
     }
 
     final function getPostURLAttribute()
