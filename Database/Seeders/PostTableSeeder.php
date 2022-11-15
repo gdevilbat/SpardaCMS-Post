@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 use DB;
 
+use Gdevilbat\SpardaCMS\Modules\Post\Entities\Post;
+use Gdevilbat\SpardaCMS\Modules\Taxonomy\Entities\TermRelationships;
+
 class PostTableSeeder extends Seeder
 {
     /**
@@ -20,10 +23,10 @@ class PostTableSeeder extends Seeder
 
         $faker = \Faker\Factory::create();
 
-        $id = DB::table('posts')->insertGetId(
+        $post = Post::firstOrCreate(
+            ['post_slug' => \Str::slug($faker->word)],
             [
                 'post_title' => $faker->word,
-                'post_slug' => str_slug($faker->word),
                 'post_content' => $faker->text,
                 'post_excerpt' => $faker->word,
                 'post_status' => 'draft',
@@ -33,12 +36,14 @@ class PostTableSeeder extends Seeder
             ]
         );
 
-        DB::table('term_relationships')->insert([
+        TermRelationships::firstOrCreate(
             [
                 'term_taxonomy_id' => 1,
-                'object_id' => $id,
+                'object_id' => $post->getKey(),
+            ],
+            [
                 'created_at' => \Carbon\Carbon::now()
             ]
-        ]);
+        );
     }
 }

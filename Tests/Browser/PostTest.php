@@ -18,7 +18,7 @@ class PostTest extends DuskTestCase
      */
     public function testCreatePost()
     {
-        $user = \App\User::find(1);
+        $user = \App\Models\User::find(1);
         $faker = \Faker\Factory::create();
 
         $this->browse(function (Browser $browser) use ($user, $faker) {
@@ -54,7 +54,7 @@ class PostTest extends DuskTestCase
      */
     public function testEditPost()
     {
-        $user = \App\User::find(1);
+        $user = \App\Models\User::find(1);
         $faker = \Faker\Factory::create();
 
         $this->browse(function (Browser $browser) use ($user, $faker) {
@@ -92,7 +92,7 @@ class PostTest extends DuskTestCase
      */
     public function testDeletePost()
     {
-        $user = \App\User::find(1);
+        $user = \App\Models\User::find(1);
 
         $faker = \Faker\Factory::create();
 
