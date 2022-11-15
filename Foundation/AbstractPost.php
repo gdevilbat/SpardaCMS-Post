@@ -267,8 +267,9 @@ abstract class AbstractPost extends CoreController implements InterfacePost
 
         $this->authorize('delete-'.$this->post_repository->getModule(), $query);
 
-        if($query->post_status == 'publish')
+        if($query->post_status == 'publish'){
             return redirect(action('\\'.get_class($this).'@index'))->with('global_message', array('status' => 400,'message' => 'Failed Delete Post, It\'s Has Been Published!'));
+        }
 
         try {
             

@@ -113,10 +113,9 @@ class PostControllerTest extends TestCase
     {
         $response = $this->post(action('\Gdevilbat\SpardaCMS\Modules\Post\Http\Controllers\PostController@destroy'), [
                         '_method' => 'DELETE'
-                    ]);
-
-        $response->assertStatus(302)
-                 ->assertRedirect(action('\Gdevilbat\SpardaCMS\Modules\Core\Http\Controllers\Auth\LoginController@showLoginForm')); //Return Not Valid, User Not Login
+                    ])
+                    ->assertStatus(302)
+                    ->assertRedirect(action('\Gdevilbat\SpardaCMS\Modules\Core\Http\Controllers\Auth\LoginController@showLoginForm')); //Return Not Valid, User Not Login
 
 
         $user = \App\Models\User::find(1);

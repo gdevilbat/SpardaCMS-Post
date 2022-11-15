@@ -51,7 +51,7 @@ class Post extends Model
      */
     final function setPostStatusAttribute($value)
     {
-        if(!empty($value))
+        if(!empty($value) && $value != 'draft')
         {
             $this->attributes['post_status'] = 'publish';
         }
