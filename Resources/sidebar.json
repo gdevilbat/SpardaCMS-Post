@@ -1,0 +1,21 @@
+[
+    {
+        "text": "Posts",
+        "type": "dropdown",
+        "icon": "flaticon-notes",
+        "childrens": [
+            {
+                "text": "All Post",
+                "name": "post-master"
+            },
+            {
+                "text": "Categories",
+                "name": "category-master"
+            },
+            {
+                "text": "Tags",
+                "name": "tag-master"
+            }
+        ]
+    }
+]
